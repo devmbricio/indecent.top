@@ -17,6 +17,13 @@ export const getUserId = async () => {
   return userId;
 };
 
+export function capitalizeWords(str: string): string {
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
 
 //
 export function generateRandomPassword() {

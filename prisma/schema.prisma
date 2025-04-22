@@ -10,6 +10,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Country {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique
+  slug      String   @unique // Ex: "brasil"
+  cities    City[]
+  keywords  Keyword[] // Prisma infere a relação inversa
+  @@map("countries")
+}
+
+model City {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  slug      String   // Ex: "porto-alegre"
+  countryId String   @db.ObjectId
+  country   Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  keywords  Keyword[] // Prisma infere a relação inversa
+  @@unique([slug, countryId])
+  @@map("cities")
+}
+
+model Keyword {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  value     String   @unique // Ex: "acompanhantes porto alegre"
+  slug      String   @unique // Ex: "acompanhantes-porto-alegre"
+  cityId    String?  @db.ObjectId
+  city      City?    @relation(fields: [cityId], references: [id], onDelete: SetNull)
+  countryId String?  @db.ObjectId
+  country   Country? @relation(fields: [countryId], references: [id], onDelete: SetNull)
+
+  @@index([cityId])
+  @@index([countryId])
+  @@map("keywords")
+}
+
 model VerificationToken {
     id               String                  @id @default(auto()) @map("_id") @db.ObjectId
     identifier String
