@@ -1,0 +1,208 @@
+"use client";
+
+import { useSearchParams } from "next/navigation";
+import { pricingData } from "@/config/subscriptions";
+import { pricingDataWebsites } from "@/config/subscriptionsWebsites";
+
+export default function BuyReferralPage() {
+  const searchParams = useSearchParams();
+  const productId = searchParams.get("productId");
+  const referrerId = searchParams.get("ref");
+
+  // Combine produtos de diferentes fontes
+  const products = [...pricingData, ...pricingDataWebsites];
+  const product = products.find((prod) => prod.stripeIds.monthly === productId);
+
+  const handlePayment = async () => {
+    try {
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId, ref: referrerId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao iniciar o pagamento.");
+      }
+
+      const { url } = await response.json();
+      window.location.href = url;
+    } catch (error) {
+      console.error("Erro ao processar o pagamento:", error);
+      alert("Erro ao processar o pagamento.");
+    }
+  };
+
+  if (!product) {
+    return (
+      <div className="container mx-auto text-center py-10">
+        <h1 className="text-2xl font-bold">Produto não encontrado</h1>
+        <p>Verifique o link ou tente novamente.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto text-center py-10">
+      <h1 className="text-3xl font-bold">{product.title}</h1>
+      <p className="text-lg text-gray-600">{product.description}</p>
+      <p className="text-sm text-gray-500 mt-4">
+        {referrerId
+          ? `Você foi indicado pelo afiliado: ${referrerId}`
+          : "Nenhum afiliado associado."}
+      </p>
+      <div className="mt-6">
+        <button
+          onClick={handlePayment}
+          className="mt-4 bg-blue-500 text-gray-300 py-2 px-6 rounded hover:bg-blue-600"
+        >
+          Comprar agora
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
+/*
+
+
+"use client";
+
+import { useSearchParams } from "next/navigation";
+import { pricingData } from "@/config/subscriptions";
+import { pricingDataWebsites } from "@/config/subscriptionsWebsites";
+
+export default function BuyPage() {
+  const searchParams = useSearchParams();
+  const productId = searchParams.get("productId");
+  const referrerId = searchParams.get("ref");
+
+  // Combine os dados de produtos
+  const products = [...pricingData, ...pricingDataWebsites];
+  const product = products.find((prod) => prod.stripeIds.monthly === productId);
+
+  if (!product) {
+    return <p>Produto não encontrado. Verifique o link.</p>;
+  }
+
+  return (
+    <div className="container mx-auto text-center  py-[10%]">
+      <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
+      <p className="text-lg text-gray-700">{product.description}</p>
+
+      <div className="mt-6">
+        <p className="text-sm text-gray-500">
+          {referrerId ? `Você foi indicado pelo afiliado: ${referrerId}` : "Nenhum afiliado associado."}
+        </p>
+        <button
+          onClick={() => alert("Pagamento ainda não implementado.")}
+          className="mt-4 bg-blue-500 text-gray-300 py-2 px-6 rounded hover:bg-blue-600"
+        >
+          Comprar agora
+        </button>
+      </div>
+    </div>
+  );
+}
+*/
+/*
+
+
+import { getCurrentUser } from "@/lib/session";
+import { getUserSubscriptionPlan } from "@/lib/subscription";
+import { constructMetadata } from "@/lib/utils";
+import { PricingCards } from "@/components/pricing/pricing-cards";
+import { PricingCardsWebsites } from "@/components/pricing/PricingCardsWebsites";
+
+
+export const metadata = constructMetadata({
+  title: "indecent.top – aqui tudo pode!",
+  description: "indecent.top – aqui tudo pode!",
+});
+
+export default async function BuyReferralPage() {
+  const user = await getCurrentUser();
+  let subscriptionPlan;
+
+  if (user && user.id) {
+    subscriptionPlan = await getUserSubscriptionPlan(user.id);
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:pr-[10%] lg:grid-cols-2 gap-0 py-2 md:py-0 bg-center bg-cover bg-scroll md:bg-fixed bg-black/10 ">
+      <PricingCards userId={user?.id} subscriptionPlan={subscriptionPlan} />
+      <PricingCardsWebsites userId={user?.id} />
+  
+    </div>
+  );
+}
+*/
+
+
+/* funcional antes dos liks de afiliados
+import { getCurrentUser } from "@/lib/session";
+import { getUserSubscriptionPlan } from "@/lib/subscription";
+import { constructMetadata } from "@/lib/utils";
+import { PricingCards } from "@/components/pricing/pricing-cards";
+import { PricingCardsWebsites } from "@/components/pricing/PricingCardsWebsites";
+
+
+export const metadata = constructMetadata({
+  title: "Pricing – top",
+  description: "Prices top.",
+});
+
+export default async function PricingPage() {
+  const user = await getCurrentUser();
+  let subscriptionPlan;
+
+  if (user && user.id) {
+    subscriptionPlan = await getUserSubscriptionPlan(user.id);
+  }
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 py-2 md:py-0 bg-center bg-cover bg-scroll md:bg-fixed md:bg-[url('/macaco-network.jpg')] bg-gradient-to-r from-gray-900 via-gray-950 to-gray-900">
+      <PricingCards userId={user?.id} subscriptionPlan={subscriptionPlan} />
+      <PricingCardsWebsites userId={user?.id} />
+  
+    </div>
+  );
+}
+*/
+/*
+import { getCurrentUser } from "@/lib/session";
+import { getUserSubscriptionPlan } from "@/lib/subscription";
+import { constructMetadata } from "@/lib/utils";
+import { ComparePlans } from "@/components/pricing/compare-plans";
+import { PricingCards } from "@/components/pricing/pricing-cards";
+import { PricingFaq } from "@/components/pricing/pricing-faq";
+import { PricingCardsWebsites } from "@/components/pricing/PricingCardsWebsites";
+import { PricingCardsDigitalStrategy } from "@/components/pricing/PricingCardsDigitalStrategy";
+import { PricingCardsSites } from "@/components/pricing/PricingCardsSites";
+
+
+export const metadata = constructMetadata({
+  title: "Pricing – MaCaCo.NetWork",
+  description: "Explore our subscription plans.",
+});
+
+export default async function PricingPage() {
+  const user = await getCurrentUser();
+  let subscriptionPlan;
+
+  if (user && user.id) {
+    subscriptionPlan = await getUserSubscriptionPlan(user.id);
+  }
+
+  return (
+    <div className="flex w-full flex-row gap-16 py-8 md:py-8 bg-center bg-cover bg-scroll md:bg-fixed md:bg-[url('/macaco-network.jpg')] bg-gradient-to-r from-[rgb(255,117,25)] via-[#ff2975] to-[#8c1eff]">
+      <PricingCards userId={user?.id} subscriptionPlan={subscriptionPlan} />
+      <PricingCardsWebsites userId={user?.id} />
+ 
+
+    
+    </div>
+  );
+}
+*/

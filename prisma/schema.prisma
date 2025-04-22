@@ -1,0 +1,485 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model VerificationToken {
+    id               String                  @id @default(auto()) @map("_id") @db.ObjectId
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+}
+
+model Account {
+    id               String                  @id @default(auto()) @map("_id") @db.ObjectId
+    userId             String  @map("user_id")
+    type               String
+    provider           String
+    providerAccountId  String  @map("provider_account_id")
+    refresh_token      String? @db.String
+    access_token       String? @db.String
+    expires_at         Int?
+    token_type         String?
+    scope              String?
+    id_token           String? @db.String
+    session_state      String?
+    oauth_token_secret String?
+    oauth_token        String?
+
+     user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+    @@index([userId])
+}
+
+model Move {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  score     Int
+  moveCount Int      // <-- Adicione isso
+  createdAt DateTime @default(now())
+}
+
+
+
+model Session {
+    id               String                  @id @default(auto()) @map("_id") @db.ObjectId
+    sessionToken String   @unique @map("session_token")
+    expires      DateTime
+     user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId       String   @map("user_id")
+
+    @@index([userId])
+}
+
+model Jackpot {
+  id        String   @id @map("_id") // <- isso corrige!
+  total     Float    @default(0)
+  updatedAt DateTime @updatedAt
+}
+
+
+model TopProfile {
+    id             String   @id @default(auto()) @map("_id") @db.ObjectId
+    userId         String   @unique @db.ObjectId 
+    score          Int      @default(0) // 🔹 Soma ponderada de interações
+    rank           Int      @default(0) // 🔹 Posição no ranking
+    createdAt      DateTime @default(now())
+
+    user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+
+
+model User {
+    id                     String          @id @default(auto()) @map("_id") @db.ObjectId
+   
+    topProfile             TopProfile?   
+    interests  UserInterest[]
+    moves     Move[]   // 👈 Campo inverso da relação
+    name                   String?     @unique
+    password             String?  // Tornar opcional
+    username               String?    @unique
+    bio                    String?
+    website                String?
+    gender                 String?
+    email                  String?         @unique
+    emailVerified          DateTime?
+    image                  String?
+    createdAt              DateTime        @default(now()) @map("created_at")
+    updatedAt              DateTime        @updatedAt @map("updated_at")
+    stripeCustomerId       String?         @map("stripe_customer_id")
+    stripeSubscriptionId   String?         @map("stripe_subscription_id") // removed `@unique`
+    stripePriceId          String?         @map("stripe_price_id")
+    stripeCurrentPeriodEnd DateTime?       @map("stripe_current_period_end")
+    credits                Int             @default(0)
+    accumulativeCredits Float @default(0)
+    role                   UserRole        @default(USER)
+    instagram        String?  @unique
+    verificationPurchased Boolean @default(false) // Campo para indicar a compra de verificação
+    walletAddress String?
+    affiliate              AffiliateRole   @default(USER) // Campo de afiliado com tipo AffiliateRole
+    influencer          InfluencerRole   @default(USER) // Campo de afiliado com tipo AffiliateRole
+    postsThisMonth   Int             @default(0)     // Número de posts realizados no mês
+    affiliateSales     AffiliateSales[] @relation("UserToAffiliateSales") // Relacionamento com AffiliateSales
+    affiliateClients AffiliateClient[] @relation("AffiliateClients")
+
+    job               JobRole   @default(USER)
+
+   payments           Payment[] // Relacionamento com o modelo Payment (um usuário pode ter múltiplos pagamentos)
+
+   postsCount              Int                @default(0)
+   reels                         String?            
+   socialInteractions     String?           
+
+
+    // Relationships
+    posts         Post[]
+    saved         SavedPost[]
+    likes         Like[]
+    comments      Comment[]
+    followedBy    Follows[]   @relation("following")
+    following     Follows[]   @relation("follower")
+    accounts      Account[]
+    sessions      Session[]
+    isAdmin       Boolean     @default(false)
+    affiliateLinks AffiliateLink[] @relation("UserAffiliateLinks")
+    stories                Story[]         // Adicionando a relação com os Stories
+    // lives        Live[]
+
+    // Lives como anfitrião
+    livesHosted      Live[]   @relation("HostUser")
+
+    // Lives como convidado
+    livesAsGuest     Live[]   @relation("GuestInfluencer")
+
+  // Referral fields
+    referralId             String          @unique // Código de referência único
+    referredById           String?         // ID do usuário que indicou
+    referredBy             User?           @relation("Referrals", fields: [referredById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    referrals              User[]          @relation("Referrals") // Lista de usuários indicados
+
+    // ✅ Relação com convites enviados (Convidador)
+    invitesSent Invite[] @relation("Inviter")
+
+    // ✅ Relação com convites recebidos e resgatados (Convidado)
+    invitesRedeemed Invite[] @relation("Redeemer")
+   
+    verifiedProfile  VerifiedProfile  @default(NOTVERIFIED)
+
+    socials                Socials?        @relation("UserToSocials") // Relacionamento com a tabela Socials
+    
+    @@map("users")
+}
+
+enum InterestCategory {
+  GAMER
+  ARQUITETURA
+  MODA
+  BELEZA
+  CONTEUDO_ADULTO
+  ESPORTES
+  MUSICA
+  FILMES_SERIES
+  TECNOLOGIA
+  SAUDE_FITNESS
+  EMPREENDEDORISMO
+  VIAGENS
+  CULINARIA
+  CIENCIA
+  FOTOGRAFIA
+  AUTOMOVEIS
+  NATUREZA
+  ESPIRITUALIDADE
+  INVESTIMENTOS
+}
+
+model Interest {
+  id       String          @id @default(auto()) @map("_id") @db.ObjectId
+  name     String          @unique
+  category InterestCategory
+  users    UserInterest[]
+}
+
+model UserInterest {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  interest  Interest @relation(fields: [interestId], references: [id], onDelete: Cascade)
+  interestId String
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum AffiliateRole {
+  AFFILIATE
+  USER
+}
+
+enum InfluencerRole {
+  INFLUENCER
+  USER
+}
+
+enum VerifiedProfile {
+  VERIFIED
+  NOTVERIFIED
+}
+
+enum JobRole {
+  JOB
+  USER
+}
+
+model Sale {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId      String   // ID do produto vendido
+  affiliateCode  String   // Código do afiliado responsável pela venda
+  customerEmail  String   // Email do cliente que comprou o produto
+  amount         Int      // Valor total da venda em centavos (para compatibilidade com Stripe)
+  createdAt      DateTime @default(now()) // Data de criação da venda
+
+   product        Product  @relation("ProductSales", fields: [productId], references: [id]) // Relação com o produto
+}
+
+
+model Socials {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String   @unique
+  indecent       String?
+  whatsapp       String?
+  instagram      String?
+  tiktok         String?
+  facebook       String?
+  pinterest      String?
+  twitter        String?
+  youtube        String?
+  onlyfans       String?
+  privacySocial  String?
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  user           User     @relation(fields: [userId], references: [id], name: "UserToSocials")
+}
+
+
+model Invite {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String   @map("user_id")
+  code          String   @default(uuid()) @unique
+  instagram     String?
+  invitedById   String   @db.ObjectId
+  invitedBy     User     @relation(fields: [invitedById], references: [id], onDelete: Cascade, name: "Inviter")
+  creditsFrozen  Int      @default(0)    // Créditos associados
+  scheduledAt    DateTime               // Horário agendado para a live
+  status         String   @default("pending")  // pending, accepted, expired, completed
+  redeemedById  String?  @db.ObjectId
+  redeemedBy    User?    @relation(fields: [redeemedById], references: [id], onDelete: SetNull, name: "Redeemer")
+  callId   String? // Propriedade opcional
+  createdAt     DateTime @default(now())
+  @@unique([userId, scheduledAt])
+}
+
+model AffiliateLink {
+    id               String         @id @default(auto()) @map("_id") @db.ObjectId
+    userId           String
+    productId        String
+    generated_link String
+    createdAt        DateTime       @default(now())
+    creditedAt       DateTime?
+    creditsEarned    Int            @default(0)
+
+    user             User                 @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserAffiliateLinks")
+    product          Product        @relation(fields: [productId], references: [id], onDelete: Cascade, name: "ProductLinks")
+}
+
+model AffiliateClient {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  affiliateId    String
+  clientId       String
+  createdAt      DateTime @default(now())
+  lifetimeEarnings Float   @default(0)
+
+  affiliate      User     @relation(fields: [affiliateId], references: [id], onDelete: Cascade, name: "AffiliateClients")
+  //client         User     @relation(fields: [clientId], references: [id], onDelete: Cascade, name: "ClientReferrals")
+}
+
+model AffiliateSales {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId  String   // ID do produto
+  referrerId String   // ID do afiliado que indicou
+  userId     String   // ID do usuário que comprou
+  amount     Float    // Valor da compra
+  createdAt  DateTime @default(now()) // Data e hora da criação
+
+  // Relacionamentos (opcional, caso tenha tabelas relacionadas)
+  product            Product  @relation("ProductToAffiliateSales", fields: [productId], references: [id], onDelete: Cascade)
+  user               User     @relation("UserToAffiliateSales", fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  description   String
+  categories    String[] 
+  images        String[] // Array de URLs de imagens
+  affiliateLink String
+  createdAt     DateTime @default(now()) @db.Date
+  updatedAt     DateTime @updatedAt @db.Date
+
+  AffiliateLinks AffiliateLink[]  @relation("ProductLinks") // Campo de relação correspondente no lado do produto
+  affiliateSales     AffiliateSales[] @relation("ProductToAffiliateSales")
+  sales          Sale[]           @relation("ProductSales") // Relação com o modelo Sale
+}
+
+model Payment {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
+  amount    Float
+  txHash    String
+  status    String
+  date      DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Follows {
+    id               String  @id @default(auto()) @map("_id") @db.ObjectId
+    follower         User    @relation("follower", fields: [followerId], references: [id])
+    followerId       String
+    following        User    @relation("following", fields: [followingId], references: [id])
+    followingId      String
+
+    @@index([followerId])
+    @@index([followingId])
+    @@unique([followerId, followingId])
+}
+
+model Post {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  caption             String?
+  title   String?
+  description       String?
+  location  String? 
+  fileUrls  String[]    // Lista de URLs das imagens no S3
+  category  String   @default("free") // Níveis de acesso
+  tags       String[] // Novo campo para tags
+  likes     Like[]
+  savedBy   SavedPost[]
+  comments  Comment[]
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @map("user_id")
+  nome      String?
+  age       String?
+  peso      String?
+  altura     String?
+  dote      String?
+  valor     String?
+  whatsapp  String?
+  instagram String?
+  facebook  String?
+  tiktok    String?
+  privacy   String?
+  onlyfans  String?
+  city     String?
+  country  String?
+  likesCount  Int      @default(0) // Novo campo para curtidas totais (likes + manualLikes)
+  mLikes Int      @default(0)  // Novo campo para curtidas manuais
+
+  views      Int      @default(0) // Verifique se este campo existe
+
+  @@index([userId])
+}
+
+model Live {
+  id       String  @id @map("_id") @db.ObjectId
+  userId   String  @unique
+  playbackUrl      String
+  streamKey        String
+  ingestEndpoint   String
+  arn              String
+  status           String   @default("pending")
+  stageArn       String? 
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  scheduledAt      DateTime
+  creditsFrozen  Int  @default(0)    // 🔹 Créditos bloqueados até 80% da live ser concluída
+  imageUrl         String?
+  duration         Int?
+  inviteCode       String?  // ✅ Código de convite do convidado
+  sponsored        Boolean  @default(false) 
+
+  // Usuário anfitrião
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade, name: "HostUser")
+
+  // Convidado (caso já tenha conta)
+  guestInfluencerId String?  @db.ObjectId
+  guestInfluencer   User?    @relation(fields: [guestInfluencerId], references: [id], onDelete: Cascade, name: "GuestInfluencer")
+
+  guestInstagram    String?  // ✅ Armazena o @Instagram se o convidado não tiver conta
+}
+
+
+
+
+
+model ChatMessage {
+  id               String                  @id @default(auto()) @map("_id") @db.ObjectId
+  influencerId String  // ID do influenciador
+  userId      String   // ID do usuário que enviou a mensagem
+  text        String
+  createdAt   DateTime @default(now()) @map("created_at")
+}
+
+model SavedPost {
+    id               String                  @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+    postId    String
+    userId    String   @map("user_id")
+
+    user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([postId, userId])
+    @@index([userId])
+}
+
+model Like {
+    id               String                  @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+     post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+    postId    String
+    userId    String   @map("user_id")
+
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([postId, userId])
+    @@index([userId])
+}
+
+model Comment {
+    id               String                  @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    body      String
+    post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+    postId    String
+    userId    String   @map("user_id")
+
+    user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([postId])
+    @@index([userId])
+}
+
+model Story {
+  id               String                  @id @default(auto()) @map("_id") @db.ObjectId
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  expiresAt  DateTime
+  thumbnailUrl String  // Altere para opcional
+  videoUrl  String
+  createdAt DateTime @default(now())
+  saved     Boolean  @default(false)
+
+  @@index([userId])
+}
+
+

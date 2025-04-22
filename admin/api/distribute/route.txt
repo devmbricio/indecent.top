@@ -1,0 +1,53 @@
+import express from "express";
+import Web3 from "web3";
+import { PrismaClient } from "@prisma/client";
+import contractABI from "./contractABI.json";
+
+const prisma = new PrismaClient();
+const web3 = new Web3("https://bsc-dataseed.binance.org/");
+const CONTRACT_ADDRESS = "0xYourContractAddress";
+const PRIVATE_KEY = process.env.ADMIN_PRIVATE_KEY;
+const router = express.Router();
+
+router.post("/distribute", async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      where: { credits: { gt: 0 } },
+    });
+
+    const contract = new web3.eth.Contract(contractABI, CONTRACT_ADDRESS);
+
+    for (const user of users) {
+      const credits = user.credits;
+
+      // Preparar a transação
+      const tx = contract.methods.transfer(user.walletAddress, credits.toString());
+      const gas = await tx.estimateGas({ from: process.env.ADMIN_ADDRESS });
+      const txData = {
+        from: process.env.ADMIN_ADDRESS,
+        to: CONTRACT_ADDRESS,
+        gas,
+        data: tx.encodeABI(),
+      };
+
+      // Assinar e enviar a transação
+      const signedTx = await web3.eth.accounts.signTransaction(txData, PRIVATE_KEY);
+      const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction || "");
+
+      console.log(`Recompensa enviada para ${user.walletAddress}: ${credits} tokens`);
+
+      // Atualizar banco de dados
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { credits: 0 },
+      });
+    }
+
+    res.status(200).json({ message: "Transferências concluídas com sucesso." });
+  } catch (error) {
+    console.error("Erro ao transferir recompensas:", error);
+    res.status(500).json({ error: "Erro ao transferir recompensas." });
+  }
+});
+
+export default router;

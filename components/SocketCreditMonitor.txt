@@ -1,0 +1,190 @@
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+
+export async function POST(request: Request) {
+  try {
+    const { viewerId, influencerId } = await request.json();
+
+    if (!viewerId || !influencerId) {
+      return NextResponse.json({ error: "Faltam parâmetros." }, { status: 400 });
+    }
+
+    // Buscar o viewer, influencer e admin numa única transação (opcional)
+    const ADMIN_ID = process.env.INDECENT_ADMINISTRADOR;
+    if (!ADMIN_ID) {
+      return NextResponse.json({ error: "ADMIN_ID não configurado." }, { status: 500 });
+    }
+
+    const [viewer, influencer, admin] = await prisma.$transaction([
+      prisma.user.findUnique({ where: { id: viewerId } }),
+      prisma.user.findUnique({ where: { id: influencerId } }),
+      prisma.user.findUnique({ where: { id: ADMIN_ID } }),
+    ]);
+
+    if (!viewer) {
+      return NextResponse.json({ error: "Viewer não encontrado." }, { status: 404 });
+    }
+    if (!influencer) {
+      return NextResponse.json({ error: "Influenciador não encontrado." }, { status: 404 });
+    }
+    if (!admin) {
+      return NextResponse.json({ error: "Administrador não encontrado." }, { status: 500 });
+    }
+
+    // Verifica se o viewer tem créditos
+    if (viewer.credits <= 0) {
+      // Opcionalmente, retornamos status 302 para redirecionar:
+      return NextResponse.json({ redirect: "/compras" }, { status: 302 });
+    }
+
+    // Cálculo de frações (1 crédito deduzido)
+    const influencerShare = 0.7;
+    const affiliateShare = 0.2;
+    const adminShare = 0.1;
+
+    // Verifica se viewer é afiliado
+    // Se vocês usam enum AffiliateRole, algo como viewer.affiliate === "AFFILIATE"
+    const isViewerAffiliate = viewer.affiliate === "AFFILIATE";
+
+    // Executa tudo em transação
+    await prisma.$transaction([
+      // Debita do viewer
+      prisma.user.update({
+        where: { id: viewer.id },
+        data: {
+          credits: { decrement: 1 },
+        },
+      }),
+
+      // 70% => influencer
+      prisma.user.update({
+        where: { id: influencer.id },
+        data: {
+          credits: influencer.credits + influencerShare,
+        },
+      }),
+
+      // 20% => se viewer for AFFILIATE, para ele, senão para admin
+      isViewerAffiliate
+        ? prisma.user.update({
+            where: { id: viewer.id },
+            data: {
+              credits: viewer.credits + affiliateShare,
+            },
+          })
+        : prisma.user.update({
+            where: { id: admin.id },
+            data: {
+              credits: admin.credits + affiliateShare,
+            },
+          }),
+
+      // 10% => admin
+      prisma.user.update({
+        where: { id: admin.id },
+        data: {
+          credits: admin.credits + adminShare,
+        },
+      }),
+    ]);
+
+    // Após a transação, busca saldos atualizados para retornar ao frontend
+    const [updatedViewer, updatedInfluencer, updatedAdmin] = await prisma.$transaction([
+      prisma.user.findUnique({ where: { id: viewer.id } }),
+      prisma.user.findUnique({ where: { id: influencer.id } }),
+      prisma.user.findUnique({ where: { id: admin.id } }),
+    ]);
+
+    return NextResponse.json({
+      viewerCredits: updatedViewer?.credits,
+      influencerCredits: updatedInfluencer?.credits,
+      adminCredits: updatedAdmin?.credits,
+    });
+  } catch (error) {
+    console.error("Erro ao deduzir créditos:", error);
+    return NextResponse.json(
+      { error: "Erro interno ao deduzir créditos." },
+      { status: 500 }
+    );
+  }
+}
+
+
+
+/*
+"use client";
+
+import { useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
+
+interface Props {
+  viewerId: string;
+  influencerId: string;
+}
+
+export default function SocketCreditMonitor({ viewerId, influencerId }: Props) {
+  const [socket, setSocket] = useState<Socket | null>(null);
+
+  const [viewerCredits, setViewerCredits] = useState<number>(0);
+  const [influencerCredits, setInfluencerCredits] = useState<number>(0);
+  const [adminCredits, setAdminCredits] = useState<number>(0);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Conecta ao servidor (por padrão, se está local, "http://localhost:3000")
+    const newSocket = io({
+      path: "/socket.io", // Ajuste se seu server estiver em outra rota
+    });
+
+    // Salva no state
+    setSocket(newSocket);
+
+    // Listener: quando créditos atualizam
+    newSocket.on("creditsUpdated", (data) => {
+      setViewerCredits(data.viewerCredits);
+      setInfluencerCredits(data.influencerCredits);
+      setAdminCredits(data.adminCredits);
+      setErrorMsg(null);
+    });
+
+    // Listener: quando não tem créditos
+    newSocket.on("notEnoughCredits", (data) => {
+      setErrorMsg(data.message);
+    });
+
+    // Listener: genérico para erros
+    newSocket.on("error", (data) => {
+      setErrorMsg(data.message || "Erro desconhecido");
+    });
+
+    // Desconecta ao desmontar o componente
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []);
+
+  // Exemplo: a cada 60s, debita e distribui 1 crédito
+  useEffect(() => {
+    if (!socket) return;
+
+    const interval = setInterval(() => {
+      socket.emit("deductCredits", { viewerId, influencerId });
+    }, 60_000); // 1 min
+
+    return () => clearInterval(interval);
+  }, [socket, viewerId, influencerId]);
+
+  return (
+    <div>
+      <h2>Monitor de Créditos em Tempo Real</h2>
+      {errorMsg && <p style={{ color: "red" }}>Erro: {errorMsg}</p>}
+      <p>Créditos do Viewer: {viewerCredits}</p>
+      <p>Créditos do Influencer: {influencerCredits}</p>
+      <p>Créditos do Admin: {adminCredits}</p>
+      <p>
+        <small>Debitando 1 crédito a cada minuto do viewerId={viewerId}</small>
+      </p>
+    </div>
+  );
+}
+*/
