@@ -1,9 +1,1120 @@
+ /** @type {import('next-sitemap').IConfig} */
+ 
+ const { PrismaClient } = require('@prisma/client');
+// Inicializa o Prisma
+const prisma = new PrismaClient();
+
+ const keywords = [
+"São-Paulo",
+"Rio-de-Janeiro",
+"Brasília",
+"Fortaleza",
+"Salvador",
+"Belo-Horizonte",
+"Manaus",
+"Curitiba",
+"Recife",
+"Goiânia",
+"Porto-Alegre",
+"Belém",
+"Guarulhos",
+"Campinas",
+"São-Luís",
+"Maceió	",
+"Campo-Grande",
+"São-Gonçalo",
+"Teresina",
+"João-Pessoa",
+"São-Bernardo-do-Campo	",
+"Duque-de-Caxias",
+"Nova-Iguaçu",
+"Natal",
+"Santo-André",
+"Osasco",
+"Sorocaba",
+"Uberlândia",
+"Ribeirão-Preto",
+"São-José-dos-Campos-",
+"Cuiabá",
+"Jaboatão-dos-Guararapes",
+"Contagem",
+"Joinville",
+"Feira-de-Santana",
+"Aracaju",
+"Londrina",
+"Juiz-de-Fora",
+"Florianópolis",
+"Aparecida-de-Goiânia",
+"Serra",
+"Campos-dos-Goytacazes",
+"Belford-Roxo",
+"Niterói",
+"São-José-do-Rio-Preto",
+"Ananindeua",
+"Vila-Velh	",
+"Caxias-do-Sul",
+"Porto-Velho",
+"Mogi-das-Cruzes",
+"Jundiaí",
+"Macapá",
+"São-João-de-Meriti",
+"Piracicaba",
+"Campina-Grande",
+"Santos",
+"Mauá",
+"Montes-Claros",
+"Boa-Vista",
+"Betim",
+"Maringá",
+"Anápolis",
+"Diadema",
+"Carapicuíba",
+"Petrolina",
+"Bauru",
+"Caruaru",
+"Vitória-da-Conquista",
+"Itaquaquecetuba",
+"Rio-Branco",
+"Blumenau",
+"Ponta-Grossa",
+"Caucaia",
+"Cariacica",
+"Franca",
+"Olinda",
+"Praia-Grande",
+"Cascavel",
+"Canoas",
+"Paulista",
+"Uberaba",
+"Santarém",
+"São-Vicente",
+"Ribeirão-das-Neves",
+"São-José-dos-Pinhais",
+"Pelotas",
+"Vitória",
+"Barueri",
+"Taubaté",
+"Suzano",
+"Palmas",
+"amaçari",
+"Várzea-Grande",
+"Limeira",
+"Guarujá",
+"Juazeiro-do-Norte-",
+"Foz-do-Iguaçu",
+"Sumaré",
+"Petrópolis",
+"Cotia",
+"Taboão-da-Serra	",
+"Imperatriz	",
+"Santa Maria	",
+"São José	",
+"Parauapebas	",
+"Marabá	",
+"Gravataí	",
+"Mossoró	",
+"Itajaí	",
+"Volta Redonda	",
+"Governador Valadares	",
+"Indaiatuba	",
+"São Carlos	",
+"Chapecó	",
+"Parnamirim	",
+"Embu das Artes	",
+"Macaé	",
+"Rondonópolis	",
+"São José de Ribamar	",
+"Dourados	",
+"Araraquara	",
+"Jacareí	",
+"Juazeiro	",
+"Marília	",
+"Americana	",
+"Hortolândia	",
+"Arapiraca	",
+"Maracanaú	",
+"Itapevi	",
+"Colombo	",
+"Divinópolis	",
+"Magé	",
+"Ipatinga	",
+"Novo Hamburgo	",
+"Sete Lagoas	",
+"Rio Verde	",
+"Águas Lindas de Goiás	",
+"Presidente Prudente	",
+"Itaboraí	",
+"Viamão	",
+"Palhoça	",
+"Cabo Frio	",
+"Santa Luzia	",
+"São Leopoldo	",
+"Criciúma	",
+"Luziânia	",
+"Passo Fundo	",
+"Cabo de Santo Agostinho	",
+"Lauro de Freitas	",
+"Sobral	",
+"Rio Claro	",
+"Araçatuba	",
+"Valparaíso de Goiás	",
+"Maricá	",
+"Sinop	",
+"Nossa Senhora do Socorro	",
+"Castanhal	",
+"Rio Grande	",
+"Nova Friburgo	",
+"Alvorada	",
+"Itabuna	",
+"Cachoeiro de Itapemirim	",
+"Santa Bárbara d'Oeste	",
+"Jaraguá do Sul	",
+"Guarapuava	",
+"	Ferraz de Vasconcelos	",
+"	Ilhéus	",
+"	Bragança Paulista	",
+"	Timon	",
+"	Araguaína	",
+"	Ibirité	",
+"	Barra Mansa	",
+"	Porto Seguro	",
+"	Itu	",
+"	Angra dos Reis	",
+"	Mesquita	",
+"	Linhares	",
+"	São Caetano do Sul	",
+"	Pindamonhangaba	",
+"	Francisco Morato	",
+"	Teresópolis	",
+"	Lages	",
+"	Poços de Caldas	",
+"	Parnaíba	",
+"	Barreiras	",
+"	Patos de Minas	",
+"	Jequié	",
+"	Atibaia	",
+"	Itapecerica da Serra	",
+"	Abaetetuba	",
+"	Itapetininga	",
+"	Caxias	",
+"	Rio das Ostras	",
+"	Senador Canedo	",
+"	Santana de Parnaíba	",
+"	Mogi Guaçu	",
+"	Pouso Alegre	",
+"	Araucária	",
+"	Alagoinhas	",
+"	Toledo	",
+"	Santa Rita	",
+"	Fazenda Rio Grande	",
+"	Camaragibe	",
+"	Nilópolis	",
+"	Paranaguá	",
+"	Paço do Lumiar	",
+"	Teixeira de Freitas	",
+"	Botucatu	",
+"	Franco da Rocha	",
+"	Garanhuns	",
+"	Trindade	",
+"	Brusque	",
+"	Queimados	",
+"	Balneário Camboriú	",
+"	Teófilo Otoni	",
+"	Varginha	",
+"	Campo Largo	",
+"	Cachoeirinha	",
+"	Caraguatatuba	",
+"	Salto	",
+"	Cametá	",
+"	Vitória de Santo Antão	",
+"	Jaú	",
+"	Santa Cruz do Sul	",
+"	Três Lagoas	",
+"	Sapucaia do Sul	",
+"	Conselheiro Lafaiete	",
+"	Itapipoca	",
+"	Crato	",
+"	Araras	",
+"	Apucarana	",
+"	Araruama	",
+"	Resende	",
+"	Sabará	",
+"	Vespasiano	",
+"	Votorantim	",
+"	Pinhais	",
+"	Sertãozinho	",
+"	Barcarena	",
+"	Valinhos	",
+"	Altamira	",
+"	Barbacena	",
+"	Guarapari	",
+"	Ji-Paraná	",
+"	Tatuí	",
+"	São Mateus	",
+"	Itaituba	",
+"	Bento Gonçalves	",
+"	Bragança	",
+"	Barretos	",
+"	Itatiba	",
+"	Colatina	",
+"	Almirante Tamandaré	",
+"	Arapongas	",
+"	Birigui	",
+"	Piraquara	",
+"	Sarandi	",
+"	Jandira	",
+"	Guaratinguetá	",
+"	Bagé	",
+"	Araguari	",
+"	Uruguaiana	",
+"	Umuarama	",
+"	Itaguaí	",
+"	Formosa	",
+"	São Gonçalo do Amarante	",
+"	Catanduva	",
+"	Várzea Paulista	",
+"	Ribeirão Pires	",
+"	Igarassu	",
+"	Simões Filho	",
+"	Catalão	",
+"	Codó	",
+"	Eunápolis	",
+"	Itabira	",
+"	Paulo Afonso	",
+"	Itanhaém	",
+"	Cubatão	",
+"	Passos	",
+"	Marituba	",
+"	Nova Lima	",
+"	Araxá	",
+"	São Lourenço da Mata	",
+"	Sorriso	",
+"	Paulínia	",
+"	Tubarão	",
+"	Itumbiara	",
+"	Luís Eduardo Magalhães	",
+"	Santana	",
+"	Cambé	",
+"	Breves	",
+"	Açailândia	",
+"	Tangará da Serra	",
+"	Jataí	",
+"	Erechim	",
+"	Nova Serrana	",
+"	Paragominas	",
+"	Maranguape	",
+"	Planaltina	",
+"	Lavras	",
+"	Coronel Fabriciano	",
+"	Muriaé	",
+"	São Pedro da Aldeia	",
+"	Ourinhos	",
+"	Novo Gama	",
+"	Poá	",
+"	Bacabal	",
+"	Itacoatiara	",
+"	Itabaiana	",
+"	Ubá	",
+"	Patos	",
+"	Camboriú	",
+"	Santo Antônio de Jesus	",
+"	Ituiutaba	",
+"	Manacapuru	",
+"	Balsas	",
+"	Lagarto	",
+"	Assis	",
+"	Itaperuna	",
+"	Campo Mourão	",
+"	Ipojuca	",
+"	Caldas Novas	",
+"	Abreu e Lima	",
+"	Santa Cruz do Capibaribe	",
+"	Leme	",
+"	Iguatu	",
+"	Itaúna	",
+"	Pará de Minas	",
+"	Ariquemes	",
+"	Francisco Beltrão	",
+"	Votuporanga	",
+"	Parintins	",
+"	Japeri	",
+"	Corumbá	",
+"	Caçapava	",
+"	Vilhena	",
+"	São Cristóvão	",
+"	Caieiras	",
+"	Aracruz	",
+"	Paracatu	",
+"	Rio Largo	",
+"	Mairiporã	",
+"	Lajeado	",
+"	Itajubá	",
+"	Ubatuba	",
+"	Guaíba	",
+"	Barra do Piraí	",
+"	Avaré	",
+"	Cajamar	",
+"	Mogi Mirim	",
+"	São João da Boa Vista	",
+"	Serra Talhada	",
+"	Ponta Porã	",
+"	Paranavaí	",
+"	Cruzeiro do Sul	",
+"	Manhuaçu	",
+"	Pato Branco	",
+"	Cidade Ocidental	",
+"	Tucuruí	",
+"	São João del-Rei	",
+"	Patrocínio	",
+"	Itapeva	",
+"	Cáceres	",
+"	Saquarema	",
+"	Guanambi	",
+"	Caratinga	",
+"	Cacoal	",
+"	Arujá	",
+"	Unaí	",
+"	Gravatá	",
+"	Navegantes	",
+"	Valença	",
+"	Esmeraldas	",
+"	Redenção	",
+"	Primavera do Leste	",
+"	Gurupi	",
+"	Araripina	",
+"	Santa Inês	",
+"	Lorena	",
+"	Ijuí	",
+"	Pinheiro	",
+"	Barra do Corda	",
+"	Santana do Livramento	",
+"	Quixadá	",
+"	Moju	",
+"	Lucas do Rio Verde	",
+"	São Bento do Sul	",
+"	Picos	",
+"	Bayeux	",
+"	Jacobina	",
+"	Macaíba	",
+"	Quixeramobim	",
+"	Concórdia	",
+"	São Sebastião	",
+"	Timóteo	",
+"	Pacatuba	",
+"	Tianguá	",
+"	Chapadinha	",
+"	Goiana	",
+"	Curvelo	",
+"	Aquiraz	",
+"	Seropédica	",
+"	Serrinha	",
+"	João Monlevade	",
+"	Cachoeira do Sul	",
+"	Cianorte	",
+"	Belo Jardim	",
+"	São Roque	",
+"	Carpina	",
+"	Ceará-Mirim	",
+"	Matão	",
+"	Alfenas	",
+"	Três Rios	",
+"	Arcoverde	",
+"	Campo Limpo Paulista	",
+"	Canaã dos Carajás	",
+"	Santa Rosa	",
+"	Santo Ângelo	",
+"	Biguaçu	",
+"	Vinhedo	",
+"	Viçosa	",
+"	Crateús	",
+"	Bebedouro	",
+"	Esteio	",
+"	Itapema	",
+"	Sapiranga	",
+"	Ibiúna	",
+"	Três Corações	",
+"	Lagoa Santa	",
+"	Aracati	",
+"	Telêmaco Borba	",
+"	Barbalha	",
+"	Cruzeiro	",
+"	Ouro Preto	",
+"	Lins	",
+"	Horizonte	",
+"	Senhor do Bonfim	",
+"	Irecê	",
+"	Canindé	",
+"	Eusébio	",
+"	Grajaú	",
+"	Caçador	",
+"	Goianésia	",
+"	Tefé	",
+"	Pirassununga	",
+"	Viana	",
+"	Castro	",
+"	Santa Izabel do Pará	",
+"	Russas	",
+"	Cascavel	",
+"	Rio do Sul	",
+"	Gaspar	",
+"	Tailândia	",
+"	Alegrete	",
+"	Candeias	",
+"	Santo Antônio do Descoberto	",
+"	Casa Nova	",
+"	Itapira	",
+"	Araranguá	",
+"	Goianira	",
+"	Jaboticabal	",
+"	São Sebastião do Paraíso	",
+"	Rolândia	",
+"	Palmeira dos Índios	",
+"	Indaial	",
+"	Dias d'Ávila	",
+"	Campo Formoso	",
+"	Fernandópolis	",
+"	Pacajus	",
+"	Janaúba	",
+"	Itupeva	",
+"	Coari	",
+"	Brumado	",
+"	Capanema	",
+"	Farroupilha	",
+"	Mineiros	",
+"	Alenquer	",
+"	Barra do Garças	",
+"	Venâncio Aires	",
+"	Peruíbe	",
+"	Oriximiná	",
+"	Formiga	",
+"	Valença	",
+"	Amparo	",
+"	Conceição do Coité	",
+"	Mococa	",
+"	Tomé-Açu	",
+"	Sousa	",
+"	Embu-Guaçu	",
+"	Tabatinga	",
+"	Cabedelo	",
+"	Lençóis Paulista	",
+"	Cataguases	",
+"	Itapetinga	",
+"	Barreirinhas	",
+"	Bom Jesus da Lapa	",
+"	Piripiri	",
+"	São Félix do Xingu	",
+"	Acaraú	",
+"	Ouricuri	",
+"	Januária	",
+"	Estância	",
+"	Itaberaba	",
+"	Igarapé-Miri	",
+"	Monte Mor	",
+"	Itaitinga	",
+"	Porto Nacional	",
+"	Montenegro	",
+"	Vacaria	",
+"	Bertioga	",
+"	Surubim	",
+"	Tupã	",
+"	Capão da Canoa	",
+"	Benevides	",
+"	Mirassol	",
+"	Cajazeiras	",
+"	Campo Bom	",
+"	Pesqueira	",
+"	Icó	",
+"	Pedro Leopoldo	",
+"	Portel	",
+"	Salgueiro	",
+"	Cristalina	",
+"	Camocim	",
+"	Camaquã	",
+"	Floriano	",
+"	Nova Odessa	",
+"	Mongaguá	",
+"	Carazinho	",
+"	Bezerros	",
+"	Penápolis	",
+"	Extremoz	",
+"	Euclides da Cunha	",
+"	Morada Nova	",
+"	Mariana	",
+"	Tauá	",
+"	Maués	",
+"	Iranduba	",
+"	Caicó	",
+"	Boituva	",
+"	Novo Repartimento	",
+"	Itapecuru-Mirim	",
+"	Marechal Deodoro	",
+"	Cruz das Almas	",
+"	Ibitinga	",
+"	Monte Alegre	",
+"	Registro	",
+"	Escada	",
+"	Andradina	",
+"	Cosmópolis	",
+"	Viçosa do Ceará	",
+"	São Borja	",
+"	Itamaraju	",
+"	Coroatá	",
+"	Limoeiro do Norte	",
+"	Jaguariúna	",
+"	União dos Palmares	",
+"	Irati	",
+"	Içara	",
+"	Acará	",
+"	Cruz Alta	",
+"	Viseu	",
+"	Penedo	",
+"	Alta Floresta	",
+"	Frutal	",
+"	São Gabriel	",
+"	Dom Eliseu	",
+"	Trairi	",
+"	Batatais	",
+"	Ponte Nova	",
+"	Santa Luzia	",
+"	Guarabira	",
+"	Humaitá	",
+"	Cachoeiras de Macacu	",
+"	Ipirá	",
+"	Paudalho	",
+"	Limoeiro	",
+"	Capitão Poço	",
+"	Porto Feliz	",
+"	Assu	",
+"	Rolim de Moura	",
+"	Rio Bonito	",
+"	Santo Amaro	",
+"	Nova Mutum	",
+"	Marechal Cândido Rondon	",
+"	Pirapora	",
+"	Buriticupu	",
+"	Videira	",
+"	Moreno	",
+"	Mafra	",
+"	Três Pontas	",
+"	Olímpia	",
+"	União da Vitória	",
+"	Canoinhas	",
+"	Palmares	",
+"	Tramandaí	",
+"	Medianeira	",
+"	São Gonçalo do Amarante	",
+"	Ribeira do Pombal	",
+"	Manicoré	",
+"	Extrema	",
+"	Itabirito	",
+"	Tutóia	",
+"	Granja	",
+"	Taquara	",
+"	Santa Isabel	",
+"	Rondon do Pará	",
+"	Beberibe	",
+"	Piedade	",
+"	São Miguel do Guamá	",
+"	Xinguara	",
+"	Congonhas	",
+"	São Francisco	",
+"	São Francisco do Sul	",
+"	Porto Ferreira	",
+"	Imbituba	",
+"	Paraíso do Tocantins	",
+"	Campo Belo	",
+"	Santo Estêvão	",
+"	Taquaritinga	",
+"	Óbidos	",
+"	São José do Rio Pardo	",
+"	Inhumas	",
+"	Buíque	",
+"	Parobé	",
+"	Pontes e Lacerda	",
+"	Caetité	",
+"	São Miguel dos Campos	",
+"	Louveira	",
+"	São Gabriel da Cachoeira	",
+"	Bom Despacho	",
+"	Guapimirim	",
+"	Baião	",
+"	Xanxerê	",
+"	Ibiporã	",
+"	Tijucas	",
+"	Artur Nogueira	",
+"	Viana	",
+"	Lagoa da Prata	",
+"	Morrinhos	",
+"	Delmiro Gouveia	",
+"	Sapé	",
+"	Tremembé	",
+"	Leopoldina	",
+"	Barra	",
+"	Brejo Santo	",
+"	Guaxupé	",
+"	Tobias Barreto	",
+"	Juruti	",
+"	Vigia	",
+"	Jaru	",
+"	Naviraí	",
+"	Vargem Grande Paulista	",
+"	Coruripe	",
+"	Boa Viagem	",
+"	Capivari	",
+"	Mairinque	",
+"	Itupiranga	",
+"	Canguçu	",
+"	São Bento do Una	",
+"	Prudentópolis	",
+"	Nova Venécia	",
+"	Canela	",
+"	Santiago	",
+"	Jales	",
+"	Tucano	",
+"	Brejo da Madre de Deus	",
+"	Nova Andradina	",
+"	São Joaquim da Barra	",
+"	Quirinópolis	",
+"	Araci	",
+"	Poções	",
+"	Palmas	",
+"	Catu	",
+"	Bocaiuva	",
+"	Barras	",
+"	Estância Velha	",
+"	Campina Grande do Sul	",
+"	Monte Santo	",
+"	Diamantina	",
+"	Monte Carmelo	",
+"	Queimadas	",
+"	São Benedito	",
+"	Monte Alto	",
+"	Altos	",
+"	Osório	",
+"	São José de Mipibu	",
+"	Sidrolândia	",
+"	Cabreúva	",
+"	Campos do Jordão	",
+"	Aquidauana	",
+"	João Pinheiro	",
+"	Guaramirim	",
+"	Santa Cruz do Rio Pardo	",
+"	Itapajé	",
+"	São Bento	",
+"	Capão Bonito	",
+"	Santana do Ipanema	",
+"	Seabra	",
+"	Timbaúba	",
+"	União	",
+"	Casimiro de Abreu	",
+"	Timbó	",
+"	Jaguaquara	",
+"	Paiçandu	",
+"	Campo Novo do Parecis	",
+"	Juína	",
+"	Igarapé	",
+"	Campo Maior	",
+"	Breu Branco	",
+"	Mauriti	",
+"	Dracena	",
+"	Lábrea	",
+"	Barra Velha	",
+"	Muaná	",
+"	Araquari	",
+"	Jardinópolis	",
+"	Paraty	",
+"	Jaraguá	",
+"	Cornélio Procópio	",
+"	Presidente Dutra	",
+"	Marau	",
+"	São Francisco de Itabapoana	",
+"	Maracaju	",
+"	Lapa	",
+"	Acopiara	",
+"	Dois Vizinhos	",
+"	Pederneiras	",
+"	Santana do Paraíso	",
+"	São Lourenço	",
+"	Salinópolis	",
+"	Xique-Xique	",
+"	Itaberaí	",
+"	Cerquilho	",
+"	Conceição do Araguaia	",
+"	Mamanguape	",
+"	Campo Verde	",
+"	Augusto Corrêa	",
+"	Itararé	",
+"	Lago da Pedra	",
+"	Santo Antônio da Platina	",
+"	São Miguel do Oeste	",
+"	Porangatu	",
+"	Bom Conselho	",
+"	Rio Grande da Serra	",
+"	Serrana	",
+"	Livramento de Nossa Senhora	",
+"	Salto de Pirapora	",
+"	Uruará	",
+"	Panambi	",
+"	Tarauacá	",
+"	Vargem Grande	",
+"	Pedreira	",
+"	Itarema	",
+"	Santo Antônio da Patrulha	",
+"	Laguna	",
+"	Simão Dias	",
+"	Mata de São João	",
+"	José de Freitas	",
+"	Uruaçu	",
+"	Vera Cruz	",
+"	Barra de São Francisco	",
+"	Santos Dumont	",
+"	São Mateus do Sul	",
+"	Amontada	",
+"	Garça	",
+"	Paraíba do Sul	",
+"	Guaratuba	",
+"	Guaraciaba do Norte	",
+"	São Lourenço do Sul	",
+"	Marataízes	",
+"	Macaúbas	",
+"	Marialva	",
+"	Torres	",
+"	Coelho Neto	",
+"	Santa Maria de Jetibá	",
+"	Autazes	",
+"	Santa Helena	",
+"	Águas Belas	",
+"	Barra dos Coqueiros	",
+"	Arcos	",
+"	Paracambi	",
+"	Sena Madureira	",
+"	Santo Antônio de Pádua	",
+"	Currais Novos	",
+"	Curuçá	",
+"	Mangaratiba	",
+"	Nossa Senhora da Glória	",
+"	Toritama	",
+"	Paraguaçu Paulista	",
+"	Pacajá	",
+"	Ipu	",
+"	Esperantina	",
+"	São Sebastião do Passé	",
+"	Paranaíba	",
+"	São Gotardo	",
+"	Zé Doca	",
+"	Ipiaú	",
+"	Itabaianinha	",
+"	Santa Rita do Sapucaí	",
+"	Porto de Moz	",
+"	Remanso	",
+"	Santa Maria da Boa Vista	",
+"	Andradas	",
+"	Jacarezinho	",
+"	Almenara	",
+"	Colinas	",
+"	Afogados da Ingazeira	",
+"	Pedra Branca	",
+"	Santa Quitéria	",
+"	Salinas	",
+"	Gramado	",
+"	Vargem Grande do Sul	",
+"	Socorro	",
+"	Barreiros	",
+"	Curitibanos	",
+"	Armação dos Búzios	",
+"	Boa Esperança	",
+"	Itapemirim	",
+"	Espírito Santo do Pinhal	",
+"	Capelinha	",
+"	Lajedo	",
+"	Eldorado do Sul	",
+"	Tucumã	",
+"	São Gonçalo dos Campos	",
+"	Nova Viçosa	",
+"	Presidente Epitácio	",
+"	Itápolis	",
+"	Guajará-Mirim	",
+"	Amambai	",
+"	Guaíra	",
+"	Oliveira	",
+"	Rio Negrinho	",
+"	Matinhos	",
+"	Visconde do Rio Branco	",
+"	Araioses	",
+"	Várzea Alegre	",
+"	Paracuru	",
+"	São Fidélis	",
+"	São Raimundo Nonato	",
+"	Brumadinho	",
+"	São Mateus do Maranhão	",
+"	Caeté	",
+"	São Francisco do Conde	",
+"	Ouro Branco	",
+"	Santa Maria da Vitória	",
+"	Santa Helena de Goiás	",
+"	Rosário	",
+"	Novo Horizonte	",
+"	Orlândia	",
+"	Iturama	",
+"	São Pedro	",
+"	Oeiras	",
+"	Sento Sé	",
+"	Entre Rios	",
+"	Teotônio Vilela	",
+"	Mucuri	",
+"	Ulianópolis	",
+"	Pedro II	",
+"	Mateus Leme	",
+"	Santaluz	",
+"	Pentecoste	",
+"	Afuá	",
+"	Mombaça	",
+"	Jacundá	",
+"	Custódia	",
+"	Massapê	",
+"	Machado	",
+"	Agudos	",
+"	Tietê	",
+"	Jaíba	",
+"	Benjamin Constant	",
+"	Bom Jardim	",
+"	Jeremoabo	",
+"	Matozinhos	",
+"	Pontal	",
+"	Rio Brilhante	",
+"	Sirinhaém	",
+"	Ituverava	",
+"	Rio Branco do Sul	",
+"	Jarinu	",
+"	Atalaia	",
+"	Guariba	",
+"	Turiaçu	",
+"	Bonito	",
+"	Cansanção	",
+"	Porteirinha	",
+"	Santa Cruz	",
+"	São Manuel	",
+"	São Caetano	",
+"	Amarante do Maranhão	",
+"	Pedreiras	",
+"	Santa Rita	",
+"	Dom Pedrito	",
+"	Campos Novos	",
+"	Castelo	",
+"	Sarzedo	",
+"	Missão Velha	",
+"	Assis Chateaubriand	",
+"	Ipueiras	",
+"	Mandaguari	",
+"	José Bonifácio	",
+"	Rosário do Sul	",
+"	São João da Barra	",
+"	Barra do Choça	",
+"	Amargosa	",
+"	Iperó	",
+"	Tuntum	",
+"	Girau do Ponciano	",
+"	Apodi	",
+"	Piumhi	",
+"	Maragogipe	",
+"	Igarapé-Açu	",
+"	Rurópolis	",
+"	Itaqui	",
+"	Aliança	",
+"	Iporá	",
+"	Goiatuba	",
+"	Prainha	",
+"	Boca do Acre	",
+"	Feijó	",
+"	Domingos Martins	",
+"	Pilar	",
+"	Rio Real	",
+"	Pilão Arcado	",
+"	Conceição do Jacuípe	",
+"	Baturité	",
+"	Presidente Venceslau	",
+"	Bom Jesus do Itabapoana	",
+"	Jaguariaíva	",
+"	Promissão	",
+"	Laranjal do Jari	",
+"	Pimenta Bueno	",
+"	Confresa	",
+"	Ouro Preto do Oeste	",
+"	Nanuque	",
+"	Charqueadas	",
+"	Palotina	",
+"	Prado	",
+"	Padre Bernardo	",
+"	Niquelândia	",
+"	Itambé	",
+"	Ilhabela	",
+"	Posse	",
+"	Juara	",
+"	São José do Belmonte	",
+"	Santa Fé do Sul	",
+"	São Luiz Gonzaga	",
+"	Adamantina	",
+"	Rio Pardo	",
+"	Bodocó	",
+"	Bela Vista de Goiás	",
+"	Itaporanga d'Ajuda	",
+"	Mãe do Rio	",
+"	São Joaquim de Bicas	",
+"	Barra Bonita	",
+"	Garibaldi	",
+"	Araçuaí	",
+"	Pomerode	",
+"	Almeirim	",
+"	Nova Cruz	",
+"	Colinas do Tocantins	",
+"	Serra do Ramalho	",
+"	Curaçá	",
+"	Petrolândia	",
+"	Brejo	",
+"	Portão	",
+"	São Domingos do Maranhão	",
+"	Vassouras	",
+"	Curralinho	",
+"	Itiúba	",
+"	Palmeira	",
+"	São Luís de Montes Belos	",
+"	Oeiras do Pará	",
+"	Inhambupe	",
+"	Braço do Norte	",
+"	Várzea da Palma	",
+"	Jaguaribe	",
+"	Pitangueiras	",
+"	Penha	",
+"	Novo Progresso	",
+"	Morro do Chapéu	",
+"	Pitanga	",
+"	Ribeirão	",
+"	Fraiburgo	",
+"	Poço Redondo	",
+"	Riachão do Jacuípe	",
+"	Estreito	",
+"	João Câmara	",
+"	Cravinhos	",
+"	Capim Grosso	",
+"	Palmeira das Missões	",
+"	Eirunepé	",
+"	Bom Jardim	",
+"	Borba	",
+"	Taiobeiras	",
+"	Touros	",
+"	Américo Brasiliense	",
+"	Porto União	",
+"	São Paulo de Olivença	",
+];
+
+const config = {
+  siteUrl: 'https://www.indecent.top',
+  generateRobotsTxt: true,
+  sitemapSize: 5000,
+  outDir: './public',
+  changefreq: 'daily',
+  priority: 0.7,
+
+  // 🔹 Excluir URLs que não devem ser indexadas
+  exclude: [
+    '/api/*',      // Exclui todas as rotas da API
+    '/login',      // Exclui a página de login
+    '/signup',     // Exclui a página de cadastro
+    '/redirect',   // Exclui a página de redirecionamento
+    '/robots',     // Exclui o arquivo robots.txt
+    '/sitemap',    // Evita que o próprio sitemap seja listado no sitemap
+  ],
+
+  alternateRefs: [],
+
+  transform: async (config, path) => ({
+    loc: path,
+    changefreq: config.changefreq,
+    priority: config.priority,
+    lastmod: new Date().toISOString(),
+  }),
+
+  additionalPaths: async (config) => {
+    try {
+      // 🔹 Busca todos os usernames dos usuários cadastrados
+      const users = await prisma.user.findMany({
+        select: { username: true },
+        where: {
+          username: { not: null }, // Garante que username não seja nulo
+        },
+      });
+
+      console.log("Keywords:", keywords);
+      const keywordPathsPromises = keywords.map(async (kw) => {
+        const path = `/${kw}`;
+        return await config.transform(config, path);
+      });
+      const keywordPaths = await Promise.all(keywordPathsPromises);
+      console.log("Generated keyword paths:", keywordPaths);
+
+      console.log(`[SITEMAP] Usuários encontrados: ${users.length}`);
+
+      // 🔹 Gera as URLs de perfil e resolve as Promises corretamente
+      const userProfilePathsPromises = users
+        .filter(user => user.username) // Remove valores nulos/vazios
+        .map(async (user) => await config.transform(config, `/perfil/${user.username}`));
+      const userProfilePaths = await Promise.all(userProfilePathsPromises);
+
+      console.log(`[SITEMAP] Perfis gerados:`, userProfilePaths);
+
+      // 🔹 Busca todas as cidades e países únicos no banco de dados
+      const locations = await prisma.post.findMany({
+        select: { city: true, country: true },
+        distinct: ['city', 'country'],
+        where: {
+          city: { not: null },
+          country: { not: null },
+        },
+      });
+
+      console.log(`[SITEMAP] Cidades encontradas: ${locations.length}`);
+
+      // 🔹 Gera as URLs dinâmicas de acompanhantes e resolve as Promises corretamente
+      const locationPathsPromises = locations
+        .filter(({ city, country }) => city && country) // Evita valores nulos
+        .map(async ({ city, country }) => {
+          const slugCity = city.toLowerCase().replace(/\s+/g, '-');
+          const slugCountry = country.toLowerCase().replace(/\s+/g, '-');
+          return await config.transform(config, `/acompanhantes/${slugCountry}/${slugCity}`);
+        });
+      const locationPaths = await Promise.all(locationPathsPromises);
+
+      console.log(`[SITEMAP] URLs de acompanhantes geradas:`, locationPaths);
+
+      // 🔹 Caminhos fixos adicionais
+      const fixedPathsPromises = [
+        config.transform(config, '/'),
+        config.transform(config, '/compras'),
+      ];
+      const fixedPaths = await Promise.all(fixedPathsPromises);
+
+      // 🔹 Retorna todas as URLs, filtrando valores `undefined`
+      return [...fixedPaths, ...locationPaths, ...userProfilePaths, ...keywordPaths].filter(Boolean);
+    } catch (error) {
+      console.error("Erro ao buscar dados para o sitemap:", error);
+      return [];
+    } finally {
+      await prisma.$disconnect(); // Fecha a conexão do Prisma
+    }
+    // REMOVI ESTA LINHA INACESSÍVEL:
+    // return Promise.all([...keywordsPaths, ...staticPaths]);
+  },
+};
+
+module.exports = config;
+
+/*
 const { PrismaClient } = require('@prisma/client');
 
 // Inicializa o Prisma
 const prisma = new PrismaClient();
 
-/** @type {import('next-sitemap').IConfig} */
+** @type {import('next-sitemap').IConfig} *
 const config = {
   siteUrl: 'https://www.indecent.top',
   generateRobotsTxt: true,
@@ -91,402 +1202,6 @@ const config = {
     } finally {
       await prisma.$disconnect(); // Fecha a conexão do Prisma
     }
-  },
-};
-
-module.exports = config;
-
-/*
-const { PrismaClient } = require('@prisma/client');
-
-// Inicializa o Prisma
-const prisma = new PrismaClient();
-
-/** @type {import('next-sitemap').IConfig} 
-const config = {
-  siteUrl: 'https://www.indecent.top',
-  generateRobotsTxt: true,
-  sitemapSize: 5000,
-  outDir: './public',
-  changefreq: 'daily',
-  priority: 0.7,
-  exclude: [
-    '/api/*',      // Exclui todas as rotas da API
-    '/login',      // Exclui a página de login
-    '/signup',     // Exclui a página de cadastro
-    '/redirect',   // Exclui a página de redirecionamento
-    '/robots',     // Exclui o arquivo robots.txt
-    '/sitemap',    // Evita que o próprio sitemap seja listado no sitemap
-  ],
-  alternateRefs: [],
-
-  transform: async (config, path) => ({
-    loc: path,
-    changefreq: config.changefreq,
-    priority: config.priority,
-    lastmod: new Date().toISOString(),
-  }),
-
-  additionalPaths: async (config) => {
-    const locations = await prisma.post.findMany({
-      select: { city: true, country: true },
-      distinct: ['city', 'country'],
-      where: {
-        city: { not: null },
-        country: { not: null },
-      },
-    });
-
-    const locationPaths = await Promise.all(
-      locations.map(async ({ city, country }) => {
-        if (!city || !country) return undefined;
-
-        const slugCity = city.toLowerCase().replace(/\s+/g, '-');
-        const slugCountry = country.toLowerCase().replace(/\s+/g, '-');
-
-        return config.transform(config, `/acompanhantes/${slugCountry}/${slugCity}`);
-      })
-    );
-
-    const fixedPaths = await Promise.all([
-      config.transform(config, '/'),
-      config.transform(config, '/compras'),
-    ]);
-
-    return [...fixedPaths, ...locationPaths].filter(Boolean);
-  },
-};
-
-module.exports = config;
-*/
-
-
-/* tsx
-import { IConfig, ISitemapField } from 'next-sitemap';
-import prisma from './lib/prisma';
-
-const config: IConfig = {
-  siteUrl: 'https://www.indecent.top',
-  generateRobotsTxt: true,
-  sitemapSize: 5000,
-  outDir: './public',
-  changefreq: 'daily',
-  priority: 0.7,
-  exclude: [
-    './public, ./api/, ./login, ./signup, ./redirect',
-  ],
-  alternateRefs: [],
-
-  transform: async (config, path): Promise<ISitemapField | undefined> => {
-    if (!path) return undefined; // Retornamos `undefined` ao invés de `null`
-    return {
-      loc: path,
-      changefreq: config.changefreq,
-      priority: config.priority,
-      lastmod: new Date().toISOString(),
-    };
-  },
-
-  additionalPaths: async (config): Promise<ISitemapField[]> => {
-    // 🔹 Busca todas as cidades e países únicos no banco de dados
-    const locations = await prisma.post.findMany({
-      select: { city: true, country: true },
-      distinct: ['city', 'country'],
-      where: {
-        city: { not: null },
-        country: { not: null },
-      },
-    });
-
-    // 🔹 Constrói as URLs corretamente
-    const locationPaths = await Promise.all(
-      locations.map(async ({ city, country }) => {
-        if (!city || !country) return undefined; // Usa `undefined` ao invés de `null`
-
-        const slugCity = city.toLowerCase().replace(/\s+/g, '-'); // Slug amigável
-        const slugCountry = country.toLowerCase().replace(/\s+/g, '-');
-
-        return config.transform(config, `/acompanhantes/${slugCountry}/${slugCity}`);
-      })
-    );
-
-    // 🔹 Caminhos fixos adicionais
-    const fixedPaths = await Promise.all([
-      config.transform(config, '/'),
-      config.transform(config, '/compras'),
-    ]);
-
-    // 🔹 Filtra `undefined` antes de retornar
-    return [...fixedPaths, ...locationPaths].filter((path): path is ISitemapField => path !== undefined);
-  },
-};
-
-export default config;
-
-*/
-
-/*
-@type {import('next-sitemap').IConfig} 
-import { IConfig, ISitemapField } from 'next-sitemap';
-import { fetchPosts } from './lib/data'; // Caminho relativo direto para evitar erros de resolução
-import { id } from 'ethers/lib/utils';
-
-// Define o tipo para os posts retornados pela função fetchPosts
-interface Post {
-  id: string;
-  slug?: string;
-}
-
-const config: IConfig = {
-  siteUrl: 'https://indecent.top',
-  generateRobotsTxt: true,
-  sitemapSize: 5000,
-  outDir: './public',
-  changefreq: 'daily',
-  priority: 0.7,
-  exclude: [],
-  alternateRefs: [],
-
-  // Transforma cada caminho individual em um formato apropriado
-  transform: async (config, path): Promise<ISitemapField> => ({
-    loc: path,
-    changefreq: config.changefreq,
-    priority: config.priority,
-    lastmod: new Date().toISOString(),
-  }),
-
-  // Define caminhos adicionais para o sitemap
-  additionalPaths: async (config): Promise<ISitemapField[]> => {
-    // Obtém os posts do banco de dados ou API
-    const userPosts = await fetchPosts("free"); // Busca apenas posts gratuitos
-
-
-    // Mapeia os posts do usuário para URLs dinâmicas
-    const postPaths = await Promise.all(
-      userPosts.map(async (post) => {
-        const slug = post.id || post.id; // Use slug if available, fallback to ID
-        return config.transform(config, `/painel/(.)p/${id}`);
-      })
-    );
-
-    // Define as tags e critérios de ordenação
-    const tags = [
-      'conteudo-adulto',
-      'hentai',
-      'amador',
-      'plataforma-de-afiliados',
-      'criadores-de-conteúdo',
-      'live-ao-vivo',
-      'acompanhantes',
-      'OnlyFans brasileiro',
-      'www.onlyfans.com',
-      'onlyfans',
-      'www.privacy.com',
-      'privacy',
-      'xvideos',
-      'www.xvideos.com',
-      'socaseiras',
-      'www.socadseiras.com.br',
-      'lésbica',
-      'milf',
-      'cosplay',
-      'femdom',
-      'dominição',
-      'inversão-de-papéis',
-      'casal bi',
-      'sexo',
-      'putaria',
-      'swing',
-      'intimidades-caseiras',
-      'troca-de-casais',
-    ];
-    const sorts = ['views', 'recent', 'popular'];
-
-    // Cria URLs dinâmicas baseadas nas tags e critérios
-    const dynamicPaths = await Promise.all(
-      sorts.flatMap((sort) =>
-        tags.map((tag) =>
-          config.transform(config, `/tags/${sort}/${tag}`)
-        )
-      )
-    );
-
-    // Define caminhos fixos adicionais
-   // Transform fixed paths into valid paths
-   const fixedPaths: (ISitemapField | undefined)[] = await Promise.all([
-    config.transform(config, '/'),
-    config.transform(config, '/compras'),
-  ]);
-
-  // Combine all paths and filter undefined values
-  return [...fixedPaths, ...postPaths].filter((path): path is ISitemapField => !!path);
-},
-};
-
-export default config;
-*/
-
-
-/*
-
-
-/** @type {import('next-sitemap').IConfig} 
-const config = {
-  siteUrl: 'https://indecent.top',
-  generateRobotsTxt: true,
-  sitemapSize: 5000,
-  outDir: './public',
-  changefreq: 'daily',
-  priority: 0.7,
-  exclude: [],
-  alternateRefs: [],
-
-  transform: async (config, path) => {
-    return {
-      loc: path,
-      changefreq: config.changefreq,
-      priority: config.priority,
-      lastmod: new Date().toISOString(),
-    };
-  },
-
-  additionalPaths: async (config) => {
-    const { fetchPosts } = require('/lib/data'); // Caminho relativo
-
-    // Fetch posts from your database or API
-    const userPosts = await fetchPosts();
-
-    const postPaths = userPosts.map((post) => {
-      const slug = post.slug || post.id; // Use slug if available, fallback to ID
-      return `/painel/(.)p/${id}`;
-    });
-
-    // Tags e critérios de ordenação
-    const tags = [
-      "conteudo-adulto",
-      "hentai",
-      "amador",
-      "plataforma-de-afiliados",
-      "criadores-de-conteúdo",
-      "live-ao-vivo",
-      "acompanhantes",
-      "OnlyFans brasileiro",
-      "www.onlyfans.com",
-      "onlyfans",
-      "www.privacy.com",
-      "privacy",
-      "xvideos",
-      "www.xvideos.com",
-      "socaseiras",
-      "www.socadseiras.com.br",
-      "lésbica",
-      "milf",
-      "cosplay",
-      "femdom",
-      "dominição",
-      "inversão-de-papéis",
-      "lcasal bi",
-      "lésbica",
-      "sexo",
-      "putaria",
-      "swing",
-      "intimidades-caseiras",
-      "troca-de-casais",
-    ];
-    const sorts = ["views", "recent", "popular"];
-    const dynamicPaths = sorts.flatMap((sort) =>
-      tags.map((tag) => `/tags/${sort}/${tag}`)
-    );
-
-    // Inclui rotas adicionais fixas e dinâmicas
-    const fixedPaths = [
-      await config.transform(config, '/'),
-      await config.transform(config, '/compras'),
-    ];
-
-    // Combina rotas fixas, dinâmicas e de posts de usuários
-    return [
-      ...fixedPaths,
-      ...dynamicPaths.map((path) => config.transform(config, path)),
-      ...postPaths.map((path) => config.transform(config, path)),
-    ];
-  },
-};
-
-module.exports = config;
-*/
-
-/*
-/** @type {import('next-sitemap').IConfig} 
-const config = {
-  siteUrl: 'https://indecent.top',
-  generateRobotsTxt: true,
-  sitemapSize: 5000,
-  outDir: './public',
-  changefreq: 'daily',
-  priority: 0.7,
-  exclude: [], // Caso tenha rotas que queira excluir
-  alternateRefs: [],
-
-  // Transform padrão para todas as rotas
-  transform: async (config, path) => {
-    return {
-      loc: path,
-      changefreq: config.changefreq,
-      priority: config.priority,
-      lastmod: new Date().toISOString(),
-    };
-  },
-
-  // Adicionando rotas dinâmicas
-  additionalPaths: async (config) => {
-    // Tags e critérios de ordenação
-    const tags = ["conteudo-adulto", 
-  "hentai", 
-  "amador", 
-  "plataforma-de-afiliados",  
-  "criadores-de-conteúdo", 
-  "live-ao-vivo", "acompanhantes", 
-  "OnlyFans brasileiro", 
-  "www.onlyfans.com",   
-  "onlyfans",   
-  "www.privacy.com",  
-  "privacy",  
-  "xvideos", 
-  "www.xvideos.com", 
-  "socaseiras", 
-  "www.socadseiras.com.br",  
-  "lésbica",
-  "milf",
-  "cosplay",
-  "femdom",
-  "dominição",
-  "inversão-de-papéis",
-  "lcasal bi",
-  "lésbica",
-  "sexo",
-  "putaria",
-  "swing",
-  "intimidades-caseiras",
-  "troca-de-casais"];
-    const sorts = ["views", "recent", "popular"];
-    const dynamicPaths = sorts.flatMap((sort) =>
-      tags.map((tag) => `/tags/${sort}/${tag}`)
-    );
-
-    // Inclui rotas adicionais fixas e dinâmicas
-    const fixedPaths = [
-      await config.transform(config, '/'),
-      await config.transform(config, '/compras'),
-    ];
-
-    // Combina rotas fixas com as dinâmicas
-    return [
-      ...fixedPaths,
-      ...dynamicPaths.map((path) =>
-        config.transform(config, path)
-      ),
-    ];
   },
 };
 
