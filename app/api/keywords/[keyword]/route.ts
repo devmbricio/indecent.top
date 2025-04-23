@@ -35,7 +35,7 @@ export async function GET(
     });
 
     if (!data) {
-      return NextResponse.json({ error: "Palavra-chave não encontrada" }, { status: 404 });
+      return NextResponse.json({ error: "" }, { status: 404 });
     }
 
     let countrySlug: string | undefined;

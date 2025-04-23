@@ -3,6 +3,7 @@ import { unstable_noStore as noStore } from "next/cache";
 import type { PostWithExtras } from "@/lib/definitions";
 import { Prisma } from "@prisma/client"; // Importar Prisma e PrismaClient
 import { UserWithExtras } from "@/lib/definitions";
+import { JobRole } from "@prisma/client";
 
 export const fetchLiveDetails = async (id: string) => {
   try {
@@ -87,19 +88,26 @@ export const fetchUserCredits = async (userId: string) => {
 
 export async function fetchPostsForLocation(city: string, country: string, limit: number) {
   return await prisma.post.findMany({
-    where: { 
-      city: { equals: city, mode: "insensitive" }, // Busca insensível a maiúsculas/minúsculas
-      country: { equals: country, mode: "insensitive" }, // Busca insensível a maiúsculas/minúsculas
+    where: {
+      city: { equals: city, mode: "insensitive" },
+      country: { equals: country, mode: "insensitive" },
+      OR: [
+        { whatsapp: { not: null } },
+        { user: { job: JobRole.JOB } },
+      ],
     },
     orderBy: { createdAt: "desc" },
     take: limit,
     include: {
-      user: true,
+      user: {
+        select: { job: true },
+      },
       comments: true,
       likes: true,
     },
   });
 }
+
 
 
 export async function fetchUserSubscriptionAndCredits(userId: string) {

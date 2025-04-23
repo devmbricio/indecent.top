@@ -6,7 +6,6 @@ import { PostWithExtras } from "@/lib/definitions";
 import Link from "next/link";
 import UserAvatar from "./UserAvatar";
 import Comments from "./Comments";
-import Timestamp from "./Timestamp";
 import PostOptions from "./PostOptions";
 import PostActions from "./PostActions";
 import 'swiper/css';
@@ -17,7 +16,6 @@ import ImageWithErrorHandler from "./ImageWithErrorHandler";
 import { Navigation, EffectCreative } from "swiper/modules";
 import { FaPlay, FaPause, FaWhatsapp } from "react-icons/fa";
 import Image from "next/image";
- 
 
 function Post({ post }: { post: PostWithExtras }) {
   const { data: session } = useSession();
@@ -26,11 +24,10 @@ function Post({ post }: { post: PostWithExtras }) {
 
   const [fileUrls, setFileUrls] = useState<string[]>([]);
   const [showDetails, setShowDetails] = useState<boolean>(false);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [playingIndex, setPlayingIndex] = useState<number | null>(null);
   const [showControls, setShowControls] = useState(true);
-  const [activeVideoIndex, setActiveVideoIndex] = useState<number | null>(null); // Para controlar o vídeo ativo
 
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]); // Usando useRef para múltiplos vídeos
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const videoExtensions = [".mp4", ".mov", ".webm", ".ogg"];
@@ -47,23 +44,22 @@ function Post({ post }: { post: PostWithExtras }) {
 
   const toggleDetails = () => setShowDetails((prev) => !prev);
 
-  // Função para verificar visibilidade do vídeo
   const handlePlayPause = (index: number) => {
-    // Pause todos os vídeos
     videoRefs.current.forEach((video, i) => {
       if (i !== index && video) {
         video.pause();
       }
     });
 
-    if (videoRefs.current[index]) {
-      if (isPlaying) {
-        videoRefs.current[index].pause();
+    const video = videoRefs.current[index];
+    if (video) {
+      if (playingIndex === index) {
+        video.pause();
+        setPlayingIndex(null);
       } else {
-        videoRefs.current[index].play();
+        video.play();
+        setPlayingIndex(index);
       }
-      setIsPlaying(!isPlaying);
-      setActiveVideoIndex(isPlaying ? null : index); // Atualiza o índice do vídeo ativo
     }
   };
 
@@ -73,45 +69,36 @@ function Post({ post }: { post: PostWithExtras }) {
     timeoutRef.current = setTimeout(() => setShowControls(false), 2000);
   };
 
-  // Função para definir o índice do vídeo ativo
-  const handleSetActiveVideoIndex = (index: number | null) => {
-    setActiveVideoIndex(index);
-  };
-
-  // Função que cria o IntersectionObserver para controlar a visibilidade dos vídeos
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           const index = Number(entry.target.getAttribute("data-index"));
           const video = videoRefs.current[index];
+
           if (entry.isIntersecting && video) {
-            video.play(); // Inicia o vídeo quando ele entra na tela
-            setActiveVideoIndex(index); // Atualiza o índice do vídeo ativo
+            video.play();
+            setPlayingIndex(index);
           } else if (video) {
-            video.pause(); // Pausa o vídeo quando ele sai da tela
-            if (activeVideoIndex === index) {
-              setActiveVideoIndex(null); // Reseta o índice do vídeo ativo
-            }
+            video.pause();
+            if (playingIndex === index) setPlayingIndex(null);
           }
         });
       },
-      { threshold: 0.5 } // O vídeo precisa estar 50% visível para começar a tocar
+      { threshold: 0.5 }
     );
 
-    // Observa cada vídeo
-    const currentVideoRefs = videoRefs.current; // Armazena o valor atual de videoRefs
+    const currentVideoRefs = videoRefs.current;
     currentVideoRefs.forEach((video) => {
       if (video) observer.observe(video);
     });
 
-    // Limpa o observer quando o componente for desmontado
     return () => {
       currentVideoRefs.forEach((video) => {
         if (video) observer.unobserve(video);
       });
     };
-  }, [activeVideoIndex]);
+  }, [playingIndex]);
 
   return (
     <div className="flex flex-col w-full lg:max-w-md max-w-xl space-y-2.5 pt-[5%] overflow-hidden">
@@ -124,7 +111,6 @@ function Post({ post }: { post: PostWithExtras }) {
                 {post.user.name}
               </Link>
               <span className="font-medium text-xs"> • </span>
-             
             </p>
             <p className="text-xs text-gray-400 font-medium">
               {post.city}, {post.country}
@@ -134,7 +120,6 @@ function Post({ post }: { post: PostWithExtras }) {
         <PostOptions post={post} userId={userId} />
       </div>
 
- 
       <div className="relative aspect-[9/16] w-full max-w-md rounded-lg sm:rounded-md overflow-hidden">
         <Swiper 
           spaceBetween={10}
@@ -154,35 +139,19 @@ function Post({ post }: { post: PostWithExtras }) {
             <SwiperSlide key={index}>
               <div className="relative w-full h-full">
                 {isVideo(url) ? (
-                 <video
-                 ref={(el) => {
-                   videoRefs.current[index] = el;
-                 }}
-                 src={url}
-                 loop
-                 playsInline
-                 muted
-                 className="w-full h-full object-cover overflow-hidden"
-                 data-index={index}
-                 onLoadedMetadata={(e) => {
-                   const video = e.currentTarget;
-                   // Espera os metadados carregarem
-                   if (video.readyState >= 1) {
-                     // Garante que o segundo 3 existe
-                     const targetTime = video.duration > 3 ? 3 : video.duration / 2;
-                     video.currentTime = targetTime;
-               
-                     // Quando o vídeo terminar de buscar esse frame, ele pausa
-                     video.onseeked = () => {
-                       video.pause();
-                     };
-                   }
-                 }}
-                 onPause={() => handleSetActiveVideoIndex(null)}
-                 onPlay={() => handleSetActiveVideoIndex(index)}
-               />
-               
-               
+                  <video
+                    ref={(el) => {
+                      videoRefs.current[index] = el;
+                    }}
+                    src={url}
+                    loop
+                    playsInline
+                    muted
+                    className="w-full h-full object-cover overflow-hidden"
+                    data-index={index}
+                    onPause={() => setPlayingIndex(null)}
+                    onPlay={() => setPlayingIndex(index)}
+                  />
                 ) : (
                   <ImageWithErrorHandler
                     src={url}
@@ -195,23 +164,21 @@ function Post({ post }: { post: PostWithExtras }) {
                 )}
               </div>
               {isVideo(url) && showControls && (
-  <button
-    onClick={(e) => {
-      e.preventDefault();
-      handlePlayPause(index);
-    }}
-    className="absolute inset-0 flex items-center justify-center rounded-full w-16 h-16 m-auto text-[#f19ddc] text-4xl transition-opacity opacity-20 duration-300 z-50"
-  >
-    {isPlaying && activeVideoIndex === index ? <FaPause /> : <FaPlay />}
-  </button>
-)}
-
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePlayPause(index);
+                  }}
+                  className="absolute inset-0 flex items-center justify-center rounded-full w-16 h-16 m-auto text-[#f19ddc] text-4xl transition-opacity opacity-20 duration-300 z-50"
+                >
+                  {playingIndex === index ? <FaPause /> : <FaPlay />}
+                </button>
+              )}
             </SwiperSlide>
           ))}
         </Swiper>
       </div>
 
- 
       <div className="flex justify-center items-center">
         <div className="p-4">
           <button
@@ -229,7 +196,6 @@ function Post({ post }: { post: PostWithExtras }) {
         </div>
       </div>
 
-   
       {showDetails && (
         <div className="text-sm space-y-1.5 mt-2">
           {post.nome && <p><strong>Nome:</strong> {post.nome}</p>}
@@ -268,6 +234,7 @@ function Post({ post }: { post: PostWithExtras }) {
 }
 
 export default Post;
+
 
 /*
 "use client"; //antes do jackpot

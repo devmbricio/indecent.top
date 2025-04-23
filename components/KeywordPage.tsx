@@ -30,7 +30,7 @@ export default function KeywordPage() {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData?.error || "Erro ao buscar dados");
+          throw new Error(errorData?.error || "");
         }
 
         const data = await response.json();
@@ -113,7 +113,7 @@ export default function KeywordPage() {
   if (error) {
     return (
       <div className="text-gray-600">
-        <p>Erro ao carregar dados: {error}</p>
+        <p> {error}</p>
         <button
           onClick={handleGoToAcompanhantes}
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
@@ -127,7 +127,7 @@ export default function KeywordPage() {
   if (!keywordData) {
     return (
       <div className="text-gray-600">
-        <p>Palavra-chave não encontrada.</p>
+        <p></p>
         <button
           onClick={handleGoToAcompanhantes}
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
