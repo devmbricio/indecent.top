@@ -4,6 +4,7 @@ import Image from "next/image";
 import Footer from "@/components/Footer";
 import { FaWhatsapp } from "react-icons/fa";
 
+
 export const dynamic = 'force-static';
 
 export async function generateMetadata({ params }: { params: { country: string; city: string } }) {

@@ -15,10 +15,13 @@
 
 # production
 /build
+/scripts
+
 
 # misc
 .DS_Store
 *.pem
+.next-sitemap.config.js
 
 # debug
 npm-debug.log*

@@ -1,4 +1,215 @@
- /** @type {import('next-sitemap').IConfig} */
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
+const keywords =[
+  { "value": "Acompanhantes" },
+  { "value": "Garotas de Programa" },
+  { "value": "Prostitutas" },
+  { "value": "Escorts" },
+  { "value": "Putas" },
+  { "value": "Job" },
+  { "value": "Acompanhantes-Job" },
+  { "value": "modelos-Job" },
+  { "value": "Profissionais-do-job" },
+  { "value": "Profissionais-do-Sexo" },
+  { "value": "Trabalhadoras-do- Sexo" },
+  { "value": "Sex-Workers" },
+  { "value": "Atrizes-Adultas" },
+  { "value": "Modelos-Eróticas" },
+  { "value": "Massagistas-Sensuais" },
+  { "value": "Massagem-Erótica" },
+  { "value": "Encontros-Casuais" },
+  { "value": "Sexo-Casual" },
+  { "value": "Programas" },
+  { "value": "Serviços-Sexuais" },
+  { "value": "Acompanhantes-de-Luxo" },
+  { "value": "Escorts-de-Luxo" },
+  { "value": "Garotas-de-Programa-VIP" },
+  { "value": "fatalmodel-Job" },
+  { "value": "onlyfans-Job" },
+  { "value": "Prostitutas-VIP" },
+  { "value": "Acompanhantes-Independentes" },
+  { "value": "Escorts Independentes" },
+  { "value": "Garotas de Programa Independentes" },
+  { "value": "Prostitutas Independentes" },
+  { "value": "Onde-encontrar-acompanhantes" },
+  { "value": "Onde-encontrar-garotas-de-programa" },
+  { "value": "Onde-encontrar-prostitutas" },
+  { "value": "Onde-encontrar-escorts" },
+  { "value": "Telefones-de-acompanhantes" },
+  { "value": "Contatos-de-garotas-de-programa" },
+  { "value": "WhatsApp-acompanhantes" },
+  { "value": "WhatsApp-garotas-de-programa" },
+  { "value": "Fotos-de-acompanhantes" },
+  { "value": "Fotos-de-garotas-de-programa" },
+  { "value": "Vídeos-de-acompanhantes" },
+  { "value": "Vídeos-de-garotas-de-programa" },
+  { "value": "Preços-de-acompanhantes" },
+  { "value": "Valores-de-programas" },
+  { "value": "Tarifas-de-acompanhantes" },
+  { "value": "Anúncios-de-acompanhantes" },
+  { "value": "Classificados-de-acompanhantes" },
+  { "value": "Acompanhantes-xvideos" },
+  { "value": "Acompanhantes-olyfans" },
+  { "value": "Acompanhantes-fatalmodel" },
+  { "value": "Sites-de-acompanhantes" },
+  { "value": "Agências-de-acompanhantes" },
+  { "value": "Book-de-acompanhantes" },
+  { "value": "Perfis-de-acompanhantes" },
+  { "value": "Mulheres-de-programa" },
+  { "value": "Homens-de-programa" },
+  { "value": "Swing" },
+  { "value": "Travestis" },
+  { "value": "Transsexuais" },
+  { "value": "Shemales" },
+  { "value": "Gays" },
+  { "value": "Lésbicas" },
+  { "value": "Bissexuais" },
+  { "value": "Serviços-para-casais" },
+  { "value": "Fetiches" },
+  { "value": "BDSM" },
+  { "value": "Dominação" },
+  { "value": "Submissão" },
+  { "value": "Roleplay" },
+  { "value": "Striptease" },
+  { "value": "Lap dance" },
+  { "value": "Nuru-massage" },
+  { "value": "Happy-ending-massage" },
+  { "value": "Acompanhantes-24-horas" },
+  { "value": "Programas-noturnos" },
+  { "value": "Encontros-discretos" },
+  { "value": "Sigilo-absoluto" },
+  { "value": "Hot-girls" },
+  { "value": "Sexy-escorts" },
+  { "value": "Beautiful-companions" },
+  { "value": "Call-girls" },
+  { "value": "Hookers" },
+  { "value": "Adult-entertainment" },
+  { "value": "Erotic-services" },
+  { "value": "Sexual-encounters" },
+  { "value": "Online-dating" },
+  { "value": "Adult-dating" },
+  { "value": "Sex-dating" },
+  { "value": "Local-escorts" },
+  { "value": "Nearby-prostitutes" },
+  { "value": "Find-escorts" },
+  { "value": "Look-for-prostitutes" },
+  { "value": "Directory-of-escorts" },
+  { "value": "List-of-prostitutes" },
+  { "value": "Reviews-of-escorts" },
+  { "value": "Testimonials-of-prostitutes" },
+  { "value": "Safety-tips-for-escorts" },
+  { "value": "Guide-to-hiring-prostitutes" },
+  { "value": "Legalidade-da-prostituição" },
+  { "value": "Direitos-das-profissionais-do-sexo" },
+  { "value": "Saúde-sexual" },
+  { "value": "Prevenção-de-DSTs" },
+  { "value": "Camisinha" },
+  { "value": "Sexo-seguro" },
+  { "value": "Bem-estar-sexual" }
+];
+
+// 🔧 Função para gerar slug URL-friendly
+const slugify = (str) => {
+  return str
+    .normalize("NFD")                   // separa acentos das letras
+    .replace(/[\u0300-\u036f]/g, "")   // remove acentos
+    .toLowerCase()
+    .replace(/\s+/g, '-')              // substitui espaços por hífen
+    .replace(/[^a-z0-9-]/g, '')        // remove tudo que não é letra, número ou hífen
+    .replace(/--+/g, '-')              // evita múltiplos hífens seguidos
+    .replace(/^-+|-+$/g, '');          // remove hífens no início/fim
+};
+
+const config = {
+  siteUrl: 'https://www.indecent.top',
+  generateRobotsTxt: true,
+  sitemapSize: 5000,
+  outDir: './public',
+  changefreq: 'daily',
+  priority: 0.7,
+
+  exclude: [
+    '/api/*',
+    '/login',
+    '/signup',
+    '/redirect',
+    '/robots',
+    '/sitemap',
+  ],
+
+  transform: async (config, path) => ({
+    loc: path,
+    changefreq: config.changefreq,
+    priority: config.priority,
+    lastmod: new Date().toISOString(),
+  }),
+
+  additionalPaths: async (config) => {
+    try {
+      const [users, countries] = await Promise.all([
+        prisma.user.findMany({
+          select: { username: true },
+          where: { username: { not: null } },
+        }),
+        prisma.country.findMany({
+          include: {
+            cities: true,
+          },
+        }),
+      ]);
+
+      console.log(`[SITEMAP] Usuários encontrados: ${users.length}`);
+      console.log(`[SITEMAP] Países carregados: ${countries.length}`);
+
+      // 🔹 URLs de perfil de usuário
+      const userProfilePaths = await Promise.all(
+        users
+          .filter(user => user.username)
+          .map(user => config.transform(config, `/perfil/${user.username}`))
+      );
+
+      // 🔹 URLs /acompanhantes/{pais}/{cidade} para cada keyword
+// 🔹 URLs /{keyword}/{pais}/{cidade}
+const keywordPaths = [];
+
+for (const kw of keywords) {
+  const keywordSlug = slugify(kw.value); // ← transforma a keyword em slug
+  for (const country of countries) {
+    for (const city of country.cities) {
+      const slugCountry = slugify(country.slug || country.name);
+      const slugCity = slugify(city.slug || city.name);
+      const path = `/${keywordSlug}/${slugCity}/${slugCountry}`; // ← aqui usamos o slug da keyword
+      keywordPaths.push(await config.transform(config, path));
+    }
+  }
+}
+
+
+      console.log(`[SITEMAP] URLs geradas para keywords: ${keywordPaths.length}`);
+
+      // 🔹 Páginas fixas
+      const fixedPaths = await Promise.all([
+        config.transform(config, '/'),
+        config.transform(config, '/compras'),
+      ]);
+
+      return [...fixedPaths, ...userProfilePaths, ...keywordPaths];
+    } catch (error) {
+      console.error("❌ Erro ao gerar paths do sitemap:", error);
+      return [];
+    } finally {
+      await prisma.$disconnect();
+    }
+  },
+};
+
+module.exports = config;
+
+
+/*
+ 
+ /** @type {import('next-sitemap').IConfig} *
  
  const { PrismaClient } = require('@prisma/client');
 // Inicializa o Prisma
@@ -1103,105 +1314,6 @@ const config = {
     }
     // REMOVI ESTA LINHA INACESSÍVEL:
     // return Promise.all([...keywordsPaths, ...staticPaths]);
-  },
-};
-
-module.exports = config;
-
-/*
-const { PrismaClient } = require('@prisma/client');
-
-// Inicializa o Prisma
-const prisma = new PrismaClient();
-
-** @type {import('next-sitemap').IConfig} *
-const config = {
-  siteUrl: 'https://www.indecent.top',
-  generateRobotsTxt: true,
-  sitemapSize: 5000,
-  outDir: './public',
-  changefreq: 'daily',
-  priority: 0.7,
-
-  // 🔹 Excluir URLs que não devem ser indexadas
-  exclude: [
-    '/api/*',      // Exclui todas as rotas da API
-    '/login',      // Exclui a página de login
-    '/signup',     // Exclui a página de cadastro
-    '/redirect',   // Exclui a página de redirecionamento
-    '/robots',     // Exclui o arquivo robots.txt
-    '/sitemap',    // Evita que o próprio sitemap seja listado no sitemap
-  ],
-
-  alternateRefs: [],
-
-  transform: async (config, path) => ({
-    loc: path,
-    changefreq: config.changefreq,
-    priority: config.priority,
-    lastmod: new Date().toISOString(),
-  }),
-
-  additionalPaths: async (config) => {
-    try {
-      // 🔹 Busca todos os usernames dos usuários cadastrados
-      const users = await prisma.user.findMany({
-        select: { username: true },
-        where: {
-          username: { not: null }, // Garante que username não seja nulo
-        },
-      });
-
-      console.log(`[SITEMAP] Usuários encontrados: ${users.length}`);
-
-      // 🔹 Gera as URLs de perfil e resolve as Promises corretamente
-      const userProfilePaths = await Promise.all(
-        users
-          .filter(user => user.username) // Remove valores nulos/vazios
-          .map(async (user) => await config.transform(config, `/${user.username}`))
-      );
-
-      console.log(`[SITEMAP] Perfis gerados:`, userProfilePaths);
-
-      // 🔹 Busca todas as cidades e países únicos no banco de dados
-      const locations = await prisma.post.findMany({
-        select: { city: true, country: true },
-        distinct: ['city', 'country'],
-        where: {
-          city: { not: null },
-          country: { not: null },
-        },
-      });
-
-      console.log(`[SITEMAP] Cidades encontradas: ${locations.length}`);
-
-      // 🔹 Gera as URLs dinâmicas de acompanhantes e resolve as Promises corretamente
-      const locationPaths = await Promise.all(
-        locations
-          .filter(({ city, country }) => city && country) // Evita valores nulos
-          .map(async ({ city, country }) => {
-            const slugCity = city.toLowerCase().replace(/\s+/g, '-');
-            const slugCountry = country.toLowerCase().replace(/\s+/g, '-');
-            return await config.transform(config, `/acompanhantes/${slugCountry}/${slugCity}`);
-          })
-      );
-
-      console.log(`[SITEMAP] URLs de acompanhantes geradas:`, locationPaths);
-
-      // 🔹 Caminhos fixos adicionais
-      const fixedPaths = await Promise.all([
-        config.transform(config, '/'),
-        config.transform(config, '/compras'),
-      ]);
-
-      // 🔹 Retorna todas as URLs, filtrando valores `undefined`
-      return [...fixedPaths, ...locationPaths, ...userProfilePaths].filter(Boolean);
-    } catch (error) {
-      console.error("Erro ao buscar dados para o sitemap:", error);
-      return [];
-    } finally {
-      await prisma.$disconnect(); // Fecha a conexão do Prisma
-    }
   },
 };
 
