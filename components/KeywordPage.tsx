@@ -116,7 +116,7 @@ export default function KeywordPage() {
         <p> {error}</p>
         <button
           onClick={handleGoToAcompanhantes}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+          className="mt-4 px-4 py-2 bg-[#ddc897] text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
         >
           {buttonText()} {/* Chame a função para obter o texto dinâmico */}
         </button>
@@ -126,11 +126,11 @@ export default function KeywordPage() {
 
   if (!keywordData) {
     return (
-      <div className="text-gray-600">
+      <div className="text-gray-900">
         <p></p>
         <button
           onClick={handleGoToAcompanhantes}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+          className="mt-4 px-4 py-2 bg-[#ddc897] text-gray-900 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
         >
           {buttonText()} {/* Chame a função para obter o texto dinâmico */}
         </button>
