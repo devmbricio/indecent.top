@@ -45,23 +45,29 @@ function Post({ post }: { post: PostWithExtras }) {
   const toggleDetails = () => setShowDetails((prev) => !prev);
 
   const handlePlayPause = (index: number) => {
-    videoRefs.current.forEach((video, i) => {
-      if (i !== index && video) {
-        video.pause();
-      }
-    });
-
     const video = videoRefs.current[index];
+  
     if (video) {
       if (playingIndex === index) {
         video.pause();
-        setPlayingIndex(null);
+        setPlayingIndex(null); // Pausa o vídeo e limpa o índice de vídeo ativo
       } else {
+        // Pausa todos os vídeos e muta
+        videoRefs.current.forEach((v, i) => {
+          if (i !== index && v) {
+            v.pause();
+            v.muted = true; // Muda para mudo
+          }
+        });
+  
+        // Reproduz o vídeo atual e desmuta
         video.play();
-        setPlayingIndex(index);
+        video.muted = false;
+        setPlayingIndex(index); // Define o vídeo atual como ativo
       }
     }
   };
+  
 
   const showPlayPauseControls = () => {
     setShowControls(true);
@@ -78,9 +84,11 @@ function Post({ post }: { post: PostWithExtras }) {
 
           if (entry.isIntersecting && video) {
             video.play();
+            video.muted = false; // Desmuta o vídeo quando ele entra na tela
             setPlayingIndex(index);
           } else if (video) {
             video.pause();
+            video.muted = true; // Muda o vídeo para mudo quando sai da tela
             if (playingIndex === index) setPlayingIndex(null);
           }
         });
@@ -146,7 +154,7 @@ function Post({ post }: { post: PostWithExtras }) {
                     src={url}
                     loop
                     playsInline
-                    muted
+                   
                     className="w-full h-full object-cover overflow-hidden"
                     data-index={index}
                     onPause={() => setPlayingIndex(null)}
@@ -234,6 +242,7 @@ function Post({ post }: { post: PostWithExtras }) {
 }
 
 export default Post;
+
 
 
 /*
