@@ -92,6 +92,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
         <link rel="icon" href="/favicon.ico" />
+
+        
         <Script id="structured-data" type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -106,6 +108,125 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             },
           })}
         </Script>
+
+        <Script
+          strategy="afterInteractive"
+          src={`https://www.googletagmanager.com/gtag/js?id=G-XH8PPH6CQ7`}
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-XH8PPH6CQ7');
+            `,
+          }}
+        />
+
+     
+        <Script
+          id="structured-data"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              "name": "Camila Chalon Arquitetura",
+              "headline": metadata.title,
+              "description": metadata.description,
+              "url": "https://www.camilachalon.com.br",
+              "logo": "https://www.camilachalon.com.br/logo.png",
+              "image":[
+                {
+                  url: "https://www.camilachalon.com.br/og-image-1.JPG",
+                  width: 1200,
+                  height: 630,
+                  alt: "Projeto de arquitetura de interiores em Porto Alegre",
+                },
+                {
+                  url: "https://www.camilachalon.com.br/og-image-2.JPG",
+                  width: 1200,
+                  height: 630,
+                  alt: "Reforma de clínica médica em Porto Alegre",
+                },
+                {
+                  url: "https://www.camilachalon.com.br/opengraph-image.jpg",
+                  width: 1200,
+                  height: 630,
+                  alt: "Consultoria de design de interiores",
+                },
+              ],
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Av. Assis Brasil, 3535/411",
+                "addressLocality": "Porto Alegre",
+                "addressRegion": "RS",
+                "postalCode": "91010-007",
+                "addressCountry": "BR"
+              },
+              "author": {
+                "@type": "Person",
+                "name": "Camila Chalon",
+              },
+              "datePublished": "2024-11-10",
+            }),
+          }}
+        />
+
+    
+<Script
+  id="structured-data-carousel"
+  type="application/ld+json"
+  strategy="beforeInteractive"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": "ImageObject",
+            "url": "https://www.camilachalon.com.br/og-image-1.JPG",
+            "width": 1200,
+            "height": 630,
+            "name": "Projeto de arquitetura de interiores em Porto Alegre",
+            "description": "Projeto de arquitetura de interiores em Porto Alegre",
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "ImageObject",
+            "url": "https://www.camilachalon.com.br/og-image-2.JPG",
+            "width": 1200,
+            "height": 630,
+            "name": "Reforma de clínica médica em Porto Alegre",
+            "description": "Reforma de clínica médica em Porto Alegre",
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "item": {
+            "@type": "ImageObject",
+            "url": "https://www.camilachalon.com.br/opengraph-image.jpg",
+            "width": 1200,
+            "height": 630,
+            "name": "Consultoria de design de interiores",
+            "description": "Consultoria de design de interiores",
+          }
+        }
+      ]
+    })
+  }}
+/>
        
       <body className={inter.className}>
         <ThemeProvider

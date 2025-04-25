@@ -10,6 +10,7 @@ import { PostsSkeleton } from "@/components/Skeletons";
 import Footer from "@/components/Footer";
 import dynamic from "next/dynamic";
 const VideoPlayer = dynamic(() => import("@/components/VideoPlayer"), { ssr: false });
+import Script from "next/script"; 
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -45,6 +46,23 @@ export default async function HomePage() {
         />
         <meta name="twitter:image" content="/path/to/default-image.jpg" />
         <link rel="canonical" href="https://indecent.top" />
+
+        <Script
+        strategy="afterInteractive"
+        src="https://www.googletagmanager.com/gtag/js?id=G-X14YM769KT"
+      />
+      <Script
+        id="google-analytics"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-X14YM769KT');
+          `,
+        }}
+      />
       
 
       <div className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center dark:bg-black/10 bg-white md:bg-fixed font-custom overflow-hidden">
