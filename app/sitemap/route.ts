@@ -12,7 +12,7 @@ export async function GET() {
     const locationUrls = locations.map(
       ({ country, city }) => `
         <url>
-          <loc>${baseUrl}/acompanhantes/${country}/${city}</loc>
+          <loc>${baseUrl}/acompanhantes/${city}/${country}</loc>
           <lastmod>${new Date().toISOString()}</lastmod>
           <priority>0.8</priority>
         </url>

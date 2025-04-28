@@ -62,12 +62,12 @@ export async function generateMetadata({ params }: { params: { country: string; 
       "acompanhantes verificados",
     ],
     alternates: {
-      canonical: `https://www.indecent.top/acompanhantes/${country}/${city}`,
+      canonical: `https://www.indecent.top/acompanhantes/${city}/${country}`,
     },
     openGraph: {
       title,
       description,
-      url: `https://www.indecent.top/acompanhantes/${country}/${city}`,
+      url: `https://www.indecent.top/acompanhantes/${city}/${country}`,
       siteName: "Indecent Top",
       type: "website",
       images: [

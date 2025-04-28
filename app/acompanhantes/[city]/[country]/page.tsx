@@ -26,12 +26,12 @@ export async function generateMetadata({ params }: { params: { country: string; 
       "acompanhantes verificados"
     ],
     alternates: {
-      canonical: `https://www.indecent.top/acompanhantes/${country}/${city}`,
+      canonical: `https://www.indecent.top/acompanhantes/${city}/${country}`,
     },
     openGraph: {
       title,
       description,
-      url: `https://www.indecent.top/acompanhantes/${country}/${city}`,
+      url: `https://www.indecent.top/acompanhantes/${city}/${country}`,
       siteName: "Indecent Top",
       type: "website",
       images: [
@@ -107,7 +107,7 @@ export default async function AcompanhantesPage({ params }: Params) {
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {posts.length > 0 ? (
             posts.map((post) => (
-              <article key={post.id} className="rounded-lg shadow-md overflow-hidden flex flex-col bg-white">
+              <article key={post.id} className="rounded-lg shadow-md overflow-hidden flex flex-col bg-black/10">
                 <Link href={`/${post.nome?.toLowerCase().replace(/\s+/g, '-') || 'perfil'}`}>
                   <div className="relative w-full aspect-[9/16] cursor-pointer">
                     <Image
