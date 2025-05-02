@@ -91,10 +91,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-        <link rel="icon" href="/favicon.ico" />
-
-        
-        <Script id="structured-data" type="application/ld+json">
+               
+       
+       
+      <body className={inter.className}>
+      <Script id="structured-data" type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebSite",
@@ -138,23 +139,23 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               "name": "Camila Chalon Arquitetura",
               "headline": metadata.title,
               "description": metadata.description,
-              "url": "https://www.camilachalon.com.br",
-              "logo": "https://www.camilachalon.com.br/logo.png",
+              "url": "https://www.indecent.top",
+              "logo": "https://www.indecent.top/logo.png",
               "image":[
                 {
-                  url: "https://www.camilachalon.com.br/og-image-1.JPG",
+                  url: "https://www.indecent.top/opengraph-image.png",
                   width: 1200,
                   height: 630,
                   alt: "Projeto de arquitetura de interiores em Porto Alegre",
                 },
                 {
-                  url: "https://www.camilachalon.com.br/og-image-2.JPG",
+                  url: "https://www.indecent.top/opengraph-image.png",
                   width: 1200,
                   height: 630,
                   alt: "Reforma de clínica médica em Porto Alegre",
                 },
                 {
-                  url: "https://www.camilachalon.com.br/opengraph-image.jpg",
+                  url: "https://www.indecent.top/opengraph-image.png",
                   width: 1200,
                   height: 630,
                   alt: "Consultoria de design de interiores",
@@ -192,7 +193,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           "position": 1,
           "item": {
             "@type": "ImageObject",
-            "url": "https://www.camilachalon.com.br/og-image-1.JPG",
+            "url": "https://www.indecent.top/opengraph-image.png",
             "width": 1200,
             "height": 630,
             "name": "Projeto de arquitetura de interiores em Porto Alegre",
@@ -204,7 +205,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           "position": 2,
           "item": {
             "@type": "ImageObject",
-            "url": "https://www.camilachalon.com.br/og-image-2.JPG",
+            "url": "https://www.indecent.top/opengraph-image.png",
             "width": 1200,
             "height": 630,
             "name": "Reforma de clínica médica em Porto Alegre",
@@ -216,7 +217,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           "position": 3,
           "item": {
             "@type": "ImageObject",
-            "url": "https://www.camilachalon.com.br/opengraph-image.jpg",
+            "url": "https://www.indecent.top/opengraph-image.png",
             "width": 1200,
             "height": 630,
             "name": "Consultoria de design de interiores",
@@ -227,8 +228,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     })
   }}
 />
-       
-      <body className={inter.className}>
+      <link rel="icon" href="/favicon.ico" />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

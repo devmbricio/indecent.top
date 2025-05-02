@@ -7,6 +7,7 @@ import InterestModal from "@/components/InterestModal";
 import { useSession } from "next-auth/react";
 import JackpotMachine from "./JackpotMachine";
 import CandyBoard from "./CandyBoard";
+import CandyClient from "./CandyClient";
 
 export default function Posts({
   initialPosts,
@@ -92,7 +93,9 @@ export default function Posts({
        {/* A cada 5 posts, insere o Jackpot */}
        {(index + 1) % 5 === 0 && (
         <div className="my-8">
-          <CandyBoard isInlineAd />
+           <CandyClient>
+            <CandyBoard isInlineAd />
+          </CandyClient>
         </div>
       )}
 
