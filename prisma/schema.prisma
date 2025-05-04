@@ -516,4 +516,34 @@ model Story {
   @@index([userId])
 }
 
+model PowerballResult {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  drawDate      DateTime @unique
+  winningNumbers Int[]
+  powerballNumber Int
+  powerPlay     Int[]    @default([]) // Lista não opcional com valor padrão vazio
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  @@map("powerball_results")
+}
 
+model Bet {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String   @map("user_id") @db.ObjectId // Assumindo que você tem um modelo User
+  mainNumbers   Int[]
+  powerballNumber Int
+  quantity      Int
+  betAmount     Float?   // Opcional: valor da aposta
+  createdAt     DateTime @default(now())
+  @@map("bets") // Nome da coleção no MongoDB
+}
+
+model JackpotInfo {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  estimatedJackpot String
+  cashValue      String
+  nextDrawDate   DateTime
+  lastUpdated    DateTime @default(now()) @updatedAt
+
+  @@map("jackpot_info") // Nome da coleção no MongoDB
+}

@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import JackpotMachine from "./JackpotMachine";
 import CandyBoard from "./CandyBoard";
 import CandyClient from "./CandyClient";
+import PowerballMundi from "./PowerBallMundi";
 
 export default function Posts({
   initialPosts,
@@ -103,6 +104,13 @@ export default function Posts({
       {(index + 1) % 10 === 0 && (
         <div className="my-8">
           <JackpotMachine isInlineAd />
+        </div>
+      )}
+
+       {/* A cada 5 posts, insere o PowerballMundi */}
+       {(index + 1) % 10 === 0 && (
+        <div className="my-8">
+          <PowerballMundi isInlineAd />
         </div>
       )}
     </div>
