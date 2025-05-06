@@ -63,6 +63,7 @@ export const metadata: Metadata = {
     "troca de casais",
 
   ],
+  
   openGraph: {
     type: "website",
     url: "https://www.indecent.top",
@@ -74,7 +75,9 @@ export const metadata: Metadata = {
         alt: "Indecent.top - Life Style",
       },
     ],
+    
   },
+  
   twitter: {
     card: "summary_large_image",
     site: "@indecenttop",
@@ -92,7 +95,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
                
-       
+      <meta name="google-site-verification" content="bDo9Cawdz-YSxBG1z7ikgrU52RZINmkMHyyd4qSjH2g" />
        
       <body className={inter.className}>
       <Script id="structured-data" type="application/ld+json">

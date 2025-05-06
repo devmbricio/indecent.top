@@ -3,63 +3,26 @@ const prisma = new PrismaClient();
 
 const keywords1 =[
   { "value": "Acompanhantes" },
-  { "value": "Garotas de Programa" },
- 
- 
- 
- 
- 
- 
- 
+  { "value": "Garotas-de-Programa" },
 ];
-
 const keywords2 =[
- 
- 
- 
- 
- 
- 
 ];
-
 const keywords3 =[
- 
 ];
-
 const keywords4 =[
- 
 ];
-
 const keywords5 =[
- 
 ];
-
 const keywords6 =[
- 
 ];
-
 const keywords7 =[
- 
 ];
-
 const keywords8 =[
- 
- 
- 
 ];
-
 const keywords9 =[
- 
-
 ];
-
 const keywords10 =[
- 
- 
- 
- 
 ];
-
 
 const slugify = (str) => {
   return str

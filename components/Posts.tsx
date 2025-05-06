@@ -91,6 +91,13 @@ export default function Posts({
     <div key={post.id} className="w-full">
       <Post post={post} />
 
+           {/* A cada 5 posts, insere o PowerballMundi */}
+           {(index + 1) % 1 === 0 && (
+        <div className="my-8">
+          <PowerballMundi isInlineAd />
+        </div>
+      )}
+
        {/* A cada 5 posts, insere o Jackpot */}
        {(index + 1) % 5 === 0 && (
         <div className="my-8">
@@ -107,12 +114,7 @@ export default function Posts({
         </div>
       )}
 
-       {/* A cada 5 posts, insere o PowerballMundi */}
-       {(index + 1) % 10 === 0 && (
-        <div className="my-8">
-          <PowerballMundi isInlineAd />
-        </div>
-      )}
+  
     </div>
   ))
 ) : (

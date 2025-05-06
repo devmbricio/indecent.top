@@ -1,30 +1,25 @@
-// pages/api/powerball/latest-results.ts
-import type { NextApiRequest, NextApiResponse } from 'next';
+// app/api/powerball/latest-results/route.ts
+import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'GET') {
+export async function GET(request: Request) {
     try {
-      const latestResult = await prisma.powerballResult.findFirst({
-        orderBy: { drawDate: 'desc' },
-      });
-
-      if (latestResult) {
-        res.status(200).json({
-          drawDate: latestResult.drawDate.toISOString(),
-          winningNumbers: latestResult.winningNumbers,
-          powerballNumber: latestResult.powerballNumber,
-          powerPlay: latestResult.powerPlay,
+        const latestResult = await prisma.powerballResult.findFirst({
+            orderBy: { drawDate: 'desc' },
         });
-      } else {
-        res.status(404).json({ error: 'Nenhum resultado disponível.' });
-      }
+
+        if (latestResult) {
+            return NextResponse.json({
+                drawDate: latestResult.drawDate.toISOString(),
+                winningNumbers: latestResult.winningNumbers,
+                powerballNumber: latestResult.powerballNumber,
+                powerPlay: latestResult.powerPlay,
+            }, { status: 200 });
+        } else {
+            return NextResponse.json({ error: 'Nenhum resultado disponível.' }, { status: 404 });
+        }
     } catch (error) {
-      console.error('Erro ao buscar os últimos resultados:', error);
-      res.status(500).json({ error: 'Erro ao buscar os últimos resultados.' });
+        console.error('Erro ao buscar os últimos resultados:', error);
+        return NextResponse.json({ error: 'Erro ao buscar os últimos resultados.' }, { status: 500 });
     }
-  } else {
-    res.setHeader('Allow', ['GET']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
 }
