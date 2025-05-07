@@ -50,13 +50,15 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "indecent.top.s3.amazonaws.com", // Adiciona o domínio genérico do S3
-      },
-      {
-        protocol: "https",
         hostname: "indecent.top.s3.us-east-1.amazonaws.com", // Adapte para o seu domínio S3
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.indecent.top",
+        pathname: "/**",
+      },
+      
       {
         protocol: "https",
         hostname: "s3.us-east-1.amazonaws.com",
@@ -89,8 +91,10 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: `${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com`, // Adiciona o domínio do seu bucket S3
-      },
+        hostname: "indecenttop.s3.us-east-1.amazonaws.com",
+        pathname: "/**",
+      }
+      
     ],
   },
   experimental: {
