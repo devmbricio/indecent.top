@@ -93,6 +93,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "indecenttop.s3.us-east-1.amazonaws.com",
         pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.indecent.top",
+        pathname: "/**",
       }
       
     ],

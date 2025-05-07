@@ -26,7 +26,9 @@ export async function POST(request: Request) {
 
     // Nome do bucket e domínio do CloudFront
     const bucketName = process.env.AWS_BUCKET_NAME!;
-    const cloudFrontDomain = process.env.CLOUDFRONT_DOMAIN || "d72slz63e5c7n.cloudfront.net";
+   // const cloudFrontDomain = process.env.CLOUDFRONT_DOMAIN || "d72slz63e5c7n.cloudfront.net";
+   const cloudFrontDomain = process.env.CLOUDFRONT_DOMAIN || "cdn.indecent.top";
+
 
     // Caminho completo do arquivo no bucket
     const key = `uploads/${Date.now()}-${fileName}`;

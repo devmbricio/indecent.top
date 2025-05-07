@@ -12,7 +12,9 @@ const s3 = new S3Client({
 
 // Função para gerar URL pública de arquivo no CloudFront
 export function generateFileUrl(fileName: string): string {
-  const cloudFrontDomain = process.env.CLOUDFRONT_DOMAIN || "d72slz63e5c7n.cloudfront.net";
+  //const cloudFrontDomain = process.env.CLOUDFRONT_DOMAIN || "d72slz63e5c7n.cloudfront.net";
+  const cloudFrontDomain = process.env.CLOUDFRONT_DOMAIN || "cdn.indecent.top";
+
   return `https://${cloudFrontDomain}/uploads/${fileName}`;
 }
 
@@ -52,7 +54,9 @@ export async function getDownloadUrl(fileName: string): Promise<string> {
 
 // Função para remover domínio S3 e forçar CloudFront nas URLs assinadas (opcional)
 export function convertToCloudFrontUrl(signedUrl: string): string {
-  const cloudFrontDomain = process.env.CLOUDFRONT_DOMAIN || "d72slz63e5c7n.cloudfront.net";
+  //const cloudFrontDomain = process.env.CLOUDFRONT_DOMAIN || "d72slz63e5c7n.cloudfront.net";
+  const cloudFrontDomain = process.env.CLOUDFRONT_DOMAIN || "cdn.indecent.top";
+
   return signedUrl.replace(
     `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com`,
     `https://${cloudFrontDomain}`

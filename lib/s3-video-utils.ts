@@ -32,6 +32,8 @@ export async function generatePresignedUrl(fileName: string, contentType: string
 // Função para gerar a URL pública do arquivo no CloudFront
 // lib/s3-video-utils.ts
 export function generateFileUrl(fileName: string): string {
-  const cloudFrontDomain = process.env.CLOUDFRONT_DOMAIN || "d72slz63e5c7n.cloudfront.net";
+  //const cloudFrontDomain = process.env.CLOUDFRONT_DOMAIN || "d72slz63e5c7n.cloudfront.net";
+  const cloudFrontDomain = process.env.CLOUDFRONT_DOMAIN || "cdn.indecent.top";
+
   return `https://${cloudFrontDomain}/stories/${fileName}`; // URL pública no CloudFront
 }
