@@ -97,6 +97,10 @@ const config = {
       const fixedPaths = await Promise.all([
         config.transform(config, '/'),
         config.transform(config, '/compras'),
+        config.transform(config, '/acompanhante'),
+        config.transform(config, '/acompanhantes'),
+        config.transform(config, '/garotas-de-programa'),
+        config.transform(config, '/bet'),
       ]);
 
       return [...fixedPaths, ...userProfilePaths, ...allKeywordPaths];

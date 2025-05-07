@@ -5,7 +5,7 @@ import {
     GetStreamKeyCommand 
   } from "@aws-sdk/client-ivs";
   
-  const ivs = new IvsClient({ region: "us-east-1" });
+  const ivs = new IvsClient({ AWS_REGION: "us-east-1" });
   
   export async function createIvsChannel(userId: string) {
     try {

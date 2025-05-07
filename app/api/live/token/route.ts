@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       headers: {
         "Content-Type": "application/json",
         "X-Amz-Date": new Date().toISOString(),
-        Authorization: `AWS ${process.env.AWS_ACCESS_KEY_ID}:${process.env.AWS_SECRET_ACCESS_KEY}`,
+        Authorization: `AWS ${process.env.AWS_AWS_ACCESS_KEY_ID}:${process.env.AWS_AWS_SECRET_ACCESS_KEY}`,
       },
       body: JSON.stringify({
         stageArn: live.stageArn,

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { IvsClient, GetChannelCommand } from "@aws-sdk/client-ivs";
 
-const ivsClient = new IvsClient({ region: "us-east-1" });
+const ivsClient = new IvsClient({ AWS_REGION: "us-east-1" });
 
 export async function GET(req: NextRequest) {
   try {

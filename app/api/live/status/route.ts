@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { IvsClient, GetStreamCommand } from "@aws-sdk/client-ivs";
 
-const ivsClient = new IvsClient({ region: process.env.AWS_REGION! });
+const ivsClient = new IvsClient({ AWS_REGION: process.env.AWS_AWS_REGION! });
 
 export async function POST(req: NextRequest) {
   try {

@@ -167,9 +167,9 @@ function downloadFile(url: string, dest: string) {
 // Função para fazer upload de um arquivo para o S3
 function uploadToS3(filePath: string, s3Key: string) {
   const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-    region: process.env.AWS_REGION!,
+    accessKeyId: process.env.AWS_AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_AWS_SECRET_ACCESS_KEY!,
+    AWS_REGION: process.env.AWS_AWS_REGION!,
   });
 
   return new Promise((resolve, reject) => {
@@ -178,7 +178,7 @@ function uploadToS3(filePath: string, s3Key: string) {
 
       s3.putObject(
         {
-          Bucket: process.env.AWS_BUCKET_NAME!,
+          Bucket: process.env.AWS_AWS_BUCKET_NAME!,
           Key: s3Key,
           Body: data,
           ContentType: "image/jpeg",
@@ -210,13 +210,13 @@ import { exec } from "child_process";
 // Função para gerar a URL completa do arquivo no S3
 function generateFileUrl(fileName: string): string {
   // Garantir que o Bucket esteja definido
-  const bucketName = process.env.AWS_BUCKET_NAME;
+  const bucketName = process.env.AWS_AWS_BUCKET_NAME;
   if (!bucketName) {
-    throw new Error("A variável de ambiente AWS_BUCKET_NAME não está definida.");
+    throw new Error("A variável de ambiente AWS_AWS_BUCKET_NAME não está definida.");
   }
 
-  const region = process.env.AWS_REGION || "us-east-2"; // Valor padrão para a região, se necessário.
-  return `https://s3.${region}.amazonaws.com/${bucketName}/stories/${fileName}`; // URL completa
+  const AWS_REGION = process.env.AWS_AWS_REGION || "us-east-2"; // Valor padrão para a região, se necessário.
+  return `https://s3.${AWS_REGION}.amazonaws.com/${bucketName}/stories/${fileName}`; // URL completa
 }
 
 export async function POST(req: NextRequest) {
@@ -267,7 +267,7 @@ export async function POST(req: NextRequest) {
 
       // Faz upload do thumbnail para o S3
       const thumbnailKey = `stories/thumbnails/${path.basename(thumbnailPath)}`;
-      const thumbnailUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${thumbnailKey}`;
+      const thumbnailUrl = `https://${process.env.AWS_AWS_BUCKET_NAME}.s3.${process.env.AWS_AWS_REGION}.amazonaws.com/${thumbnailKey}`;
 
       console.log("Fazendo upload do thumbnail...");
       await uploadToS3(thumbnailPath, thumbnailKey);
@@ -332,9 +332,9 @@ function downloadFile(url: string, dest: string) {
 // Função para fazer upload de um arquivo para o S3
 function uploadToS3(filePath: string, s3Key: string) {
   const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION,
+    accessKeyId: process.env.AWS_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_AWS_SECRET_ACCESS_KEY,
+    AWS_REGION: process.env.AWS_AWS_REGION,
   });
 
   return new Promise((resolve, reject) => {
@@ -343,7 +343,7 @@ function uploadToS3(filePath: string, s3Key: string) {
 
       s3.putObject(
         {
-          Bucket: process.env.AWS_BUCKET_NAME!, // Aqui garantimos que a variável esteja definida
+          Bucket: process.env.AWS_AWS_BUCKET_NAME!, // Aqui garantimos que a variável esteja definida
           Key: s3Key,
           Body: data,
           ContentType: "image/jpeg", // Conteúdo do thumbnail
@@ -374,9 +374,9 @@ import AWS from "aws-sdk";
 
 // Função para gerar a URL completa do arquivo no S3
 function generateFileUrl(fileName: string): string {
-  const bucketName = process.env.AWS_BUCKET_NAME || "indecent.top";
-  const region = process.env.AWS_REGION || "us-east-2";
-  return `https://s3.${region}.amazonaws.com/${bucketName}/stories/${fileName}`; // URL completa
+  const bucketName = process.env.AWS_AWS_BUCKET_NAME || "indecent.top";
+  const AWS_REGION = process.env.AWS_AWS_REGION || "us-east-2";
+  return `https://s3.${AWS_REGION}.amazonaws.com/${bucketName}/stories/${fileName}`; // URL completa
 }
 
 export async function POST(req: NextRequest) {
@@ -427,7 +427,7 @@ export async function POST(req: NextRequest) {
 
       // Faz upload do thumbnail para o S3
       const thumbnailKey = `stories/thumbnails/${path.basename(thumbnailPath)}`;
-      const thumbnailUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${thumbnailKey}`;
+      const thumbnailUrl = `https://${process.env.AWS_AWS_BUCKET_NAME}.s3.${process.env.AWS_AWS_REGION}.amazonaws.com/${thumbnailKey}`;
 
       console.log("Fazendo upload do thumbnail...");
       await uploadToS3(thumbnailPath, thumbnailKey);
@@ -493,9 +493,9 @@ function downloadFile(url: string, dest: string) {
 function uploadToS3(filePath: string, s3Key: string) {
   const AWS = require("aws-sdk");
   const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION,
+    accessKeyId: process.env.AWS_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_AWS_SECRET_ACCESS_KEY,
+    AWS_REGION: process.env.AWS_AWS_REGION,
   });
 
   return new Promise((resolve, reject) => {
@@ -504,7 +504,7 @@ function uploadToS3(filePath: string, s3Key: string) {
 
       s3.putObject(
         {
-          Bucket: process.env.AWS_BUCKET_NAME,
+          Bucket: process.env.AWS_AWS_BUCKET_NAME,
           Key: s3Key,
           Body: data,
           ContentType: "image/jpeg",
