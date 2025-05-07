@@ -3,10 +3,10 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 // Configuração do cliente S3
 const s3 = new S3Client({
-  AWS_REGION: process.env.AWS_AWS_REGION!,
+  region: process.env.AWS_REGION!,
   credentials: {
-    accessKeyId: process.env.AWS_AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
 });
 
@@ -14,7 +14,7 @@ const s3 = new S3Client({
 // Função para gerar a URL pré-assinada para upload no S3
 export async function generatePresignedUrl(fileName: string, contentType: string): Promise<string> {
   const command = new PutObjectCommand({
-    Bucket: process.env.AWS_AWS_BUCKET_NAME!,
+    Bucket: process.env.AWS_BUCKET_NAME!,
     Key: `stories/${fileName}`, // Caminho do arquivo no S3
     ContentType: contentType,
   });

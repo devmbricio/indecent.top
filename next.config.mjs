@@ -20,12 +20,13 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "*.s3.amazonaws.com",
-        pathname: "/**",
+        hostname: "www.indecent.top",
+        pathname: "/uploads/**",
       },
       {
         protocol: "https",
-        hostname: "indecent.macaco.network",
+        hostname: "*.s3.amazonaws.com",
+        pathname: "/**",
       },
       {
         protocol: "https",
@@ -88,7 +89,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: `${process.env.AWS_AWS_BUCKET_NAME}.s3.${process.env.AWS_AWS_REGION}.amazonaws.com`, // Adiciona o domínio do seu bucket S3
+        hostname: `${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com`, // Adiciona o domínio do seu bucket S3
       },
     ],
   },
@@ -96,10 +97,10 @@ const nextConfig = {
     serverComponentsExternalPackages: ["@prisma/client"],
   },
   env: {
-    AWS_AWS_BUCKET_NAME: process.env.AWS_AWS_BUCKET_NAME,
-    AWS_AWS_REGION: process.env.AWS_AWS_REGION,
-    AWS_AWS_ACCESS_KEY_ID: process.env.AWS_AWS_ACCESS_KEY_ID,
-    AWS_AWS_SECRET_ACCESS_KEY: process.env.AWS_AWS_SECRET_ACCESS_KEY,
+    AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME,
+    AWS_REGION: process.env.AWS_REGION,
+    AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
   },
 };
 

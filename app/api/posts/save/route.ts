@@ -75,8 +75,8 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 function generateFileUrl(fileName: string): string {
-  const bucketName = process.env.AWS_AWS_BUCKET_NAME || "indecent.top";
-  const AWS_REGION = process.env.AWS_AWS_REGION || "us-east-2";
+  const bucketName = process.env.AWS_BUCKET_NAME || "indecent.top";
+  const AWS_REGION = process.env.AWS_REGION || "us-east-2";
   return `https://s3.${AWS_REGION}.amazonaws.com/${bucketName}/uploads/${fileName}`;
 }
 

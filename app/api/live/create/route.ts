@@ -10,10 +10,10 @@ import {
 
 const prisma = new PrismaClient();
 const ivsClient = new IvsClient({
-  AWS_REGION: process.env.AWS_AWS_REGION!,
+  region: process.env.AWS_REGION!,
   credentials: {
-    accessKeyId: process.env.AWS_AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
 });
 
@@ -92,83 +92,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Erro ao criar canal no IVS." }, { status: 500 });
   }
 }
-
-
-
-/* criando 100% no db e ivs
-import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-import { IvsClient, CreateChannelCommand } from "@aws-sdk/client-ivs";
-
-const prisma = new PrismaClient();
-const ivsClient = new IvsClient({
-  AWS_REGION: process.env.AWS_AWS_REGION!,
-  credentials: {
-    accessKeyId: process.env.AWS_AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_AWS_SECRET_ACCESS_KEY!,
-  },
-});
-
-export async function POST(req: Request) {
-  try {
-    console.log("📡 Criando live...");
-
-    const body = await req.json();
-    const { userId } = body; // O ID da live será igual ao do usuário
-
-    if (!userId) {
-      console.error("❌ Erro: ID do usuário não fornecido.");
-      return NextResponse.json({ error: "ID do usuário é obrigatório." }, { status: 400 });
-    }
-
-    console.log(`🔎 Verificando se o usuário ${userId} já tem uma live ativa...`);
-
-    let existingLive = await prisma.live.findUnique({
-      where: { id: userId }, // O ID da live é igual ao ID do usuário
-    });
-
-    if (existingLive) {
-      console.log("✅ Live existente encontrada:", existingLive);
-      return NextResponse.json(existingLive);
-    }
-
-    console.log("🚀 Criando um novo canal IVS para o usuário...");
-
-    // Criar um novo canal IVS
-    const createCommand = new CreateChannelCommand({
-      name: `live_${userId}_${Date.now()}`,
-      type: "STANDARD",
-      latencyMode: "LOW",
-      authorized: false,
-    });
-
-    const response = await ivsClient.send(createCommand);
-
-    if (!response.channel || !response.streamKey || !response.channel.playbackUrl) {
-      console.error("❌ AWS IVS não retornou todas as informações necessárias.");
-      return NextResponse.json({ error: "Erro ao criar canal no IVS." }, { status: 500 });
-    }
-
-    console.log("✅ Canal IVS criado! ARN:", response.channel.arn);
-
-    // 🔥 Salvando a live no banco de dados
-    const newLive = await prisma.live.create({
-      data: {
-        id: userId, // 🔥 ID da live é o ID do usuário
-        playbackUrl: response.channel.playbackUrl,
-        streamKey: response.streamKey.value || "",
-        ingestEndpoint: response.channel.ingestEndpoint!,
-        arn: response.channel.arn || "",
-        status: "active",
-        userId: userId,
-      },
-    });
-
-    console.log("✅ Live salva no banco:", newLive);
-    return NextResponse.json(newLive);
-  } catch (error) {
-    console.error("❌ Erro ao criar live no IVS:", error);
-    return NextResponse.json({ error: "Erro ao criar live no IVS." }, { status: 500 });
-  }
-}
-*/

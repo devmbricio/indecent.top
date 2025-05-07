@@ -3,10 +3,10 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 // Instanciando o cliente S3
 const s3 = new S3Client({
-  AWS_REGION: process.env.AWS_AWS_REGION!,
+  region: process.env.AWS_REGION!,
   credentials: {
-    accessKeyId: process.env.AWS_AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
 });
 
@@ -19,7 +19,7 @@ export function generateFileUrl(fileName: string): string {
 // Função para fazer upload de arquivos para o S3
 export async function uploadFile(fileName: string, contentType: string, fileContent: Buffer) {
   const command = new PutObjectCommand({
-    Bucket: process.env.AWS_AWS_BUCKET_NAME!,
+    Bucket: process.env.AWS_BUCKET_NAME!,
     Key: `uploads/${fileName}`, // Define o caminho dentro do bucket
     Body: fileContent,
     ContentType: contentType,
@@ -37,7 +37,7 @@ export async function uploadFile(fileName: string, contentType: string, fileCont
 // Função para gerar URL assinada para download
 export async function getDownloadUrl(fileName: string): Promise<string> {
   const command = new GetObjectCommand({
-    Bucket: process.env.AWS_AWS_BUCKET_NAME!,
+    Bucket: process.env.AWS_BUCKET_NAME!,
     Key: `uploads/${fileName}`,
   });
 
@@ -54,7 +54,7 @@ export async function getDownloadUrl(fileName: string): Promise<string> {
 export function convertToCloudFrontUrl(signedUrl: string): string {
   const cloudFrontDomain = process.env.CLOUDFRONT_DOMAIN || "d72slz63e5c7n.cloudfront.net";
   return signedUrl.replace(
-    `https://${process.env.AWS_AWS_BUCKET_NAME}.s3.${process.env.AWS_AWS_REGION}.amazonaws.com`,
+    `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com`,
     `https://${cloudFrontDomain}`
   );
 }
@@ -65,10 +65,10 @@ import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const s3 = new S3Client({
-  AWS_REGION: process.env.AWS_AWS_REGION,
+  AWS_REGION: process.env.AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
 });
 
@@ -76,7 +76,7 @@ const s3 = new S3Client({
 export async function getUploadUrl(fileName: string, contentType: string): Promise<string> {
   try {
     const command = new PutObjectCommand({
-      Bucket: process.env.AWS_AWS_BUCKET_NAME,
+      Bucket: process.env.AWS_BUCKET_NAME,
       Key: `uploads/${fileName}`,
       ContentType: contentType,
       ACL: "public-read", // Garante que o arquivo será acessível publicamente
@@ -95,7 +95,7 @@ export async function getUploadUrl(fileName: string, contentType: string): Promi
 export async function getDownloadUrl(fileName: string): Promise<string> {
   try {
     const command = new GetObjectCommand({
-      Bucket: process.env.AWS_AWS_BUCKET_NAME,
+      Bucket: process.env.AWS_BUCKET_NAME,
       Key: `uploads/${fileName}`,
     });
 
@@ -110,7 +110,7 @@ export async function getDownloadUrl(fileName: string): Promise<string> {
 // Função para fazer upload de arquivos para o S3
 export async function uploadFile(fileName: string, contentType: string, fileContent: Buffer) {
   const command = new PutObjectCommand({
-    Bucket: process.env.AWS_AWS_BUCKET_NAME,
+    Bucket: process.env.AWS_BUCKET_NAME,
     Key: `uploads/${fileName}`,
     Body: fileContent,
     ContentType: contentType,

@@ -10,10 +10,10 @@ import {
 
 const prisma = new PrismaClient();
 const ivsClient = new IvsClient({
-  AWS_REGION: process.env.AWS_AWS_REGION!,
+  region: process.env.AWS_REGION!,
   credentials: {
-    accessKeyId: process.env.AWS_AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
 });
 
@@ -110,44 +110,3 @@ export async function POST(req: NextRequest) {
   }
 }
 
-
-
-/*
-import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma"; // Ajuste para o caminho correto do seu Prisma Client
-
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const { inviteCode, userId, instagram } = body;
-
-    if (!inviteCode || !userId || !instagram) {
-      return NextResponse.json({ error: "Invite code, userId, and instagram are required." }, { status: 400 });
-    }
-
-    const invite = await prisma.invite.findFirst({
-      where: {
-        code: inviteCode.trim(),
-        status: "pending", // Garanta que o status é "pending"
-      },
-    });
-
-    if (!invite) {
-      return NextResponse.json({ error: "Invite not found or already accepted." }, { status: 404 });
-    }
-
-    await prisma.invite.update({
-      where: { id: invite.id },
-      data: {
-        status: "accepted",
-        redeemedById: userId,
-      },
-    });
-
-    return NextResponse.json({ success: true, playbackUrl: `/live/${inviteCode}` });
-  } catch (error) {
-    console.error("Erro ao aceitar o convite:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
-}
-*/

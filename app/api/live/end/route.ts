@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { IvsClient, StopStreamCommand } from "@aws-sdk/client-ivs";
 
 const prisma = new PrismaClient();
-const ivsClient = new IvsClient({ AWS_REGION: process.env.AWS_AWS_REGION! });
+const ivsClient = new IvsClient({ region: process.env.AWS_REGION! });
 
 export async function POST(req: NextRequest) {
   try {

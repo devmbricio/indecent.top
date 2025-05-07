@@ -2,10 +2,10 @@ import prisma from "@/lib/prisma";
 import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 const s3 = new S3Client({
-  AWS_REGION: process.env.AWS_AWS_REGION,
+  region: process.env.AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
 });
 
@@ -23,13 +23,13 @@ export default async function handler() {
     for (const story of expiredStories) {
       // Extrair a chave do vídeo a partir da URL
       const objectKey = story.videoUrl.replace(
-        `https://${process.env.AWS_AWS_BUCKET_NAME}.s3.${process.env.AWS_AWS_REGION}.amazonaws.com/`,
+        `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/`,
         ""
       );
 
       // Comando para deletar o objeto do S3
       const deleteCommand = new DeleteObjectCommand({
-        Bucket: process.env.AWS_AWS_BUCKET_NAME!,
+        Bucket: process.env.AWS_BUCKET_NAME!,
         Key: objectKey,
       });
 
