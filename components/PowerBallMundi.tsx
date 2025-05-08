@@ -42,6 +42,8 @@
         const [fetchingJackpot, setFetchingJackpot] = useState<boolean>(false);
         const [pastResults, setPastResults] = useState<PowerballResult[]>([]);
         const [fetchingPastResults, setFetchingPastResults] = useState<boolean>(false);
+        const usdToBrlRate = 5.28; // valor aproximado (pode ser atualizado via API depois)
+
 
         useEffect(() => {
             const fetchPastResults = async () => {
@@ -247,6 +249,19 @@
         const mainNumberOptions = Array.from({ length: 69 }, (_, i) => i + 1);
         const powerballNumberOptions = Array.from({ length: 26 }, (_, i) => i + 1);
 
+        const formatToBR = (utcDate: string) => {
+            return new Date(utcDate).toLocaleString('pt-BR', {
+              timeZone: 'America/Sao_Paulo',
+              hour: '2-digit',
+              minute: '2-digit',
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+            });
+          };
+          
+        
+
         return (
             <div className="bg-center bg-cover" style={{ backgroundImage: "url('/powerball.png')" }}>
                 <div className={`flex flex-col items-center p-4 bg-black/50  ${isInlineAd ? 'rounded-md shadow-sm p-4' : ''}`}>
@@ -260,13 +275,38 @@
                         <div className="mb-4 text-lg">Carregando créditos...</div>
                     )}
 
-                    {jackpotInfo && (
-                        <div className="mb-4 text-center">
-                            <h2 className="font-semibold text-lg">Próximo Sorteio ({jackpotInfo.nextDrawDate.split(',')[0]}):</h2>
-                            <p className="text-xl font-bold text-green-500">Jackpot Estimado: {jackpotInfo.estimatedJackpot}</p>
-                            <p className="text-md">Valor em Dinheiro: {jackpotInfo.cashValue}</p>
-                        </div>
-                    )}
+{jackpotInfo && (
+    <div className="mb-4 text-center">
+        <p>Próximo Sorteio ({formatToBR(jackpotInfo.nextDrawDate)}):</p>
+
+        {/* Conversão para número e cálculo em BRL */}
+        {(() => {
+    const usdToBrlRate = 5.28;
+
+    const estimatedJackpotStr = String(jackpotInfo.estimatedJackpot || "");
+    const cashValueStr = String(jackpotInfo.cashValue || "");
+
+    const jackpotUSD = parseFloat(estimatedJackpotStr.replace(/[^\d.]/g, ""));
+    const cashValueUSD = parseFloat(cashValueStr.replace(/[^\d.]/g, ""));
+
+    const jackpotBRL = jackpotUSD * usdToBrlRate;
+    const cashValueBRL = cashValueUSD * usdToBrlRate;
+
+    return (
+        <>
+            <p className="text-xl font-bold text-green-500">
+                Jackpot Estimado: ${jackpotUSD} milhões (~{jackpotBRL.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })})
+            </p>
+            <p className="text-md">
+                Valor em Dinheiro: ${cashValueUSD} milhões (~{cashValueBRL.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })})
+            </p>
+        </>
+    );
+})()}
+
+    </div>
+)}
+
 
                     <div className="mb-4">
                         <h2 className="font-semibold mb-2">Escolha 5 números principais (1-69):</h2>

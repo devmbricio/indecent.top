@@ -5,7 +5,7 @@ import * as cheerio from 'cheerio';
 import prisma from '@/lib/prisma';
 import { parse } from 'date-fns';
 
-const POWERBALL_URL = "https://www.powerball.com/previous-results";
+const POWERBALL_URL = "https://www.powerball.com/";
 
 
 

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-const POWERBALL_ARCHIVE_URL = "https://www.powerball.com/previous-results";
+const POWERBALL_ARCHIVE_URL = "https://www.powerball.com/";
 
 async function scrapePastPowerballResults(limit: number = 5) {
   try {
