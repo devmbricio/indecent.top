@@ -2,7 +2,7 @@
 import cron from 'node-cron';
 import axios from 'axios';
 
-const SCRAPE_API_URL = 'http://localhost:3000/api/powerball/admin/scrape-and-save-past'; // Ajuste a URL se necessário
+const SCRAPE_API_URL = 'https://indecent.top/api/powerball/admin/scrape-and-save-past'; // Ajuste a URL se necessário
 
 // Executar a raspagem e o salvamento todos os dias à meia-noite (exemplo)
 cron.schedule('0 0 * * *', async () => {
